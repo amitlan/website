@@ -10,7 +10,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pgconf-eu-2019.pdf">
-				Partitioning in Postgres: How Far We've Come
+				<b>Partitioning in Postgres: How Far We've Come</b>
 			</a>
 		</p>
 		<p>
@@ -23,7 +23,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pgconf-asia-2019.pdf">
-				Partitioning in Postgres: How Far We've Come
+				<b>Partitioning in Postgres: How Far We've Come</b>
 			</a>
 		</p>
 		<p>
@@ -35,7 +35,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pg-11-partition-shines-pgconf-asia-2018.pdf">
-				Partitioning Shines in PostgreSQL 11
+				<b>Partitioning Shines in PostgreSQL 11</b>
 			</a>
 		</p>
 		<p>
@@ -47,7 +47,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pg-built-in-sharding-pgconf-asia-2017.pdf">
-				PostgreSQL Built-in Sharding
+				<b>PostgreSQL Built-in Sharding</b>
 			</a>
 		</p>
 		<p>
@@ -59,7 +59,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pg-decl-part-arrived-pgconf-asia-2017.pdf">
-				Declarative Partitioning Has Arrived!
+				<b>Declarative Partitioning Has Arrived!</b>
 			</a>
 		</p>
 		<p>
@@ -71,7 +71,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pg10-partition-pgcon-2017.pdf">
-				Partition and Conquer Large Data In PostgreSQL 10
+				<b>Partition and Conquer Large Data In PostgreSQL 10</b>
 			</a>
 		</p>
 		<p>
@@ -83,7 +83,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://www.pgcon.org/2017/schedule/events/1069.en.html">
-				Towards Built-in Sharding in Community PostgreSQL (No slides!)
+				<b>Towards Built-in Sharding in Community PostgreSQL (No slides!)</b>
 			</a>
 		</p>
 		<p>
@@ -95,7 +95,7 @@ Links to presentation slides of the talks I gave recently.
     <td>
 		<p>
 			<a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pg10-features-ntt-techconf.pdf">
-				PostgreSQL 10: What to Look For
+				<b>PostgreSQL 10: What to Look For</b>
 			</a>
 		</p>
 		<p>
