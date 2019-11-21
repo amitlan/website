@@ -7,6 +7,8 @@ layout: default
 Interesting links that I came across on the Internet recently.
 
 <table>
+  <tr><td><p><a href="https://martin.kleppmann.com/papers/local-first.pdf"><b>Local-First Software: You Own Your Data, in spite of the Cloud</b></a></p><p>Kleppmann et al</p></td></tr>
+
   <tr><td><p><a href="http://www.vldb.org/pvldb/vol11/p2209-kersten.pdf"><b>Compiled vs Vectorized Query Execution</b></a></p><p>Kersten, Pavlo, et al</p></td></tr>
   
   <tr><td><p><a href="http://www.vldb.org/conf/2002/S29P03.pdf"><b>SQL Memory Management in Oracle9i</b></a></p><p>Benoît Dageville, Mohamed Zait</p></td></tr>
