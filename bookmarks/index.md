@@ -7,6 +7,8 @@ layout: default
 Interesting links that I came across on the Internet recently.
 
 <table>
+  <tr><td><p><a href="https://www.tbray.org/ongoing/When/201x/2019/11/17/Bits-On-the-Wire"><b>Bits On The Wire </b></a></p><p>Tim Bray</p></td></tr>
+
   <tr><td><p><a href="https://martin.kleppmann.com/papers/local-first.pdf"><b>Local-First Software: You Own Your Data, in spite of the Cloud</b></a></p><p>Kleppmann et al</p></td></tr>
 
   <tr><td><p><a href="http://www.vldb.org/pvldb/vol11/p2209-kersten.pdf"><b>Compiled vs Vectorized Query Execution</b></a></p><p>Kersten, Pavlo, et al</p></td></tr>
