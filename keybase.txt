@@ -1,1 +1,56 @@
-something keybase something goes here!
+==================================================================
+https://keybase.io/amitlan
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://amitlan.com
+  * I am amitlan (https://keybase.io/amitlan) on keybase.
+  * I have a public key ASBrTN93IP7G3arOBGHIzS9R-5j8ZUfwzLLOscE-mmEnGgo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "01206b4cdf7720fec6ddaace0461c8cd2f51fb98fc6547f0ccb2ceb1c13e9a61271a0a",
+      "host": "keybase.io",
+      "kid": "01206b4cdf7720fec6ddaace0461c8cd2f51fb98fc6547f0ccb2ceb1c13e9a61271a0a",
+      "uid": "f36e49833bfd36260e5e38ac57e02019",
+      "username": "amitlan"
+    },
+    "merkle_root": {
+      "ctime": 1574837179,
+      "hash": "b3eb03b1713e804e26fecfb12e13c63831358ce8570759d99a425d8a0d1399c0674185be02512bf28f7080b513774d326056600aba3923c866316a2d7d4e268c",
+      "hash_meta": "f3464ca368d821119df77b0b3256b7614e4e7f19c41cd2c8304d97b918591648",
+      "seqno": 11018726
+    },
+    "service": {
+      "entropy": "6PQ62T74L+9T2U8wqPOmoAdG",
+      "hostname": "amitlan.com",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.0.0"
+  },
+  "ctime": 1574837188,
+  "expire_in": 504576000,
+  "prev": "21a7905b6ded490515ab13b87095c1351b190905b55c38070982e9024f6274aa",
+  "seqno": 8,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEga0zfdyD+xt2qzgRhyM0vUfuY/GVH8MyyzrHBPpphJxoKp3BheWxvYWTESpcCCMQgIaeQW23tSQUVqxO4cJXBNRsZCQW1XDgHCYLpAk9idKrEIJ99MvVVAFwQuc5kxq2XqCiJuKivXPbEPA9773ZM2eWlAgHCo3NpZ8RAosDbA1DmA293R2/wp5Opy0xxiQNlFs2BPvQNvqPkqGyfbVjmE3eSKmhWKGmUFRYpWOQ1w6pjSFXlSjt0x8XgD6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEIKjvpMwBaDIS/l2gNb2QISKtWah2YL/3pOwGrpZMIWGKo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/amitlan
+
+==================================================================
