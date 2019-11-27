@@ -3,16 +3,8 @@ layout: default
 ---
 <b>Home</b> / <a href="https://amitlan.github.io/writing">Writing</a> / <a href="https://amitlan.github.io/talks">Presentations</a> / <a href="https://amitlan.github.io/photolog">Photolog</a> / <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
 <h1>Amit Langote</h1>
-<table>
- <tr>
-  <td>
-   <img src="files/me.jpg" alt="hi" class="inline"/>
-  </td>
-  <td>
-   <p>I'm a software engineer with intimate knowledge of how database systems work internally and an extensive experience of developing PostgreSQL in particular.</p>
-  </td>
- </tr>
-</table>
+<img src="files/me.jpg" alt="hi" class="inline"/>
+<p>I'm a software engineer with intimate knowledge of how database systems work internally and an extensive experience of developing PostgreSQL in particular.</p>
 <ul>
  <li><a href="mailto:amitlangote09@gmail.com">Email</a></li>
  <li><a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/resume.pdf">Résumé</a></li>
