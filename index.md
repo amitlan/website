@@ -8,6 +8,7 @@ layout: default
 <ul>
  <li><a href="mailto:amitlangote09@gmail.com">Email</a></li>
  <li><a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/resume.pdf">Résumé</a></li>
+ <li><a href="https://keybase.io/amitlan">Keybase</a></li>
  <li><a href="https://twitter.com/amitlan">Twitter</a></li>
  <li><a href="https://github.com/amitlan">GitHub</a></li>
  <li><a href="https://gitlab.com/amitlan">GitLab</a></li>
