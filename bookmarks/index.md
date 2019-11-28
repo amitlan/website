@@ -1,8 +1,8 @@
 ---
 layout: default
 ---
-
 <a href="https://amitlan.github.io/">Home</a> | <a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Presentations</a> | <a href="https://amitlan.github.io/photolog">Photolog</a> | <b>Bookmarks</b>
+<hr>
 
 Interesting links that I came across on the Internet recently.
 
