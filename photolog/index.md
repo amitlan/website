@@ -1,9 +1,8 @@
 ---
 layout: default
 ---
-<a href="https://amitlan.github.io/">Home</a> | <a href="https://amitlan.github.io/">Writing</a> | <a href="https://amitlan.github.io/talks">Presentations</a> | <b>Photolog</b> | <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
+<a href="https://amitlan.github.io/">Writing</a> | <a href="https://amitlan.github.io/talks">Presentations</a> | <b>Photolog</b> | <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
 <hr>
-
 Pictures I took recently.
 
 <table>
