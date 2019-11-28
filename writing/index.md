@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<a href="https://amitlan.github.io/">Home</a> / <b>Writing</b> / <a href="https://amitlan.github.io/talks">Presentations</a> / <a href="https://amitlan.github.io/photolog">Photolog</a> / <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
+<a href="https://amitlan.github.io/">Home</a> | <b>Writing</b> | <a href="https://amitlan.github.io/talks">Presentations</a> | <a href="https://amitlan.github.io/photolog">Photolog</a> | <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
 
 Things I wrote down recently.
 
