@@ -1,7 +1,6 @@
 ---
 layout: default
 ---
-<h1>Amit Langote</h1>
 <b>Home</b> | <a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Presentations</a> | <a href="https://amitlan.github.io/photolog">Photolog</a> | <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
 <hr>
 <img src="files/me.jpg" alt="hi" class="inline"/>
