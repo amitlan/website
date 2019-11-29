@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<a href="https://amitlan.github.io/writing">Writing</a> | <b>Presentations</b> | <a href="https://amitlan.github.io/photolog">Photolog</a> | <a href="https://amitlan.github.io/bookmarks">Bookmarks</a>
+<a href="https://amitlan.github.io/writing">Writing</a> | <b>Talks</b> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <a href="https://amitlan.github.io/bookmarks">Links</a>
 <hr>
 Links to presentation slides of the talks I gave recently.
 
