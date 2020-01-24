@@ -1,5 +1,6 @@
 ---
 layout: photos
+title: Ebisu & Meguro
 ---
 
 Rainy day stroll around Ebisu and Meguro.
