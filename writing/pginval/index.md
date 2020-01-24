@@ -1,5 +1,6 @@
 ---
 layout: writing
+title: Postgres: Caches and Invalidation
 ---
 # Postgres: Caches and Invalidation
 
