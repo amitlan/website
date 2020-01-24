@@ -1,5 +1,6 @@
 ---
 layout: writing
+title: "Entry #0"
 ---
 # Entry #0
 
