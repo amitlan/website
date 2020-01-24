@@ -1,7 +1,7 @@
 ---
 layout: default
+title: Amit Langote
 ---
-<title>Amit Langote</title>
 <a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Talks</a> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <a href="https://amitlan.github.io/bookmarks">Links</a>
 <hr>
 <img src="files/me.jpg" alt="hi" class="inline"/>
