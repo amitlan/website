@@ -1,7 +1,9 @@
----
+--
 layout: writing
+--
+--
 title: Postgres: Caches and Invalidation
----
+--
 # Postgres: Caches and Invalidation
 
 The other day, while debugging a patch to fix a memory leak bug in Postgres 12,  I got to learn
