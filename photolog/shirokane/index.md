@@ -1,5 +1,6 @@
 ---
 layout: photos
+title: Shirokane
 ---
 
 Sunny day stroll at [Institute of Nature Study](http://www.ins.kahaku.go.jp/english/) located near Meguro Station.
