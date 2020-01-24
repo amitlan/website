@@ -1,5 +1,6 @@
 ---
 layout: default
+title: Links
 ---
 <a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Talks</a> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <b>Links</b>
 <hr>
