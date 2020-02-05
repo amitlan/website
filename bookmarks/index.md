@@ -7,6 +7,10 @@ title: Links
 Interesting links that I came across on the Internet recently.
 
 <table>
+  <tr><td><p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/pods98-tutorial.pdf"><b>An Overview of Query Optimization in Relational Systems</b></a></p><p>Surajit Chaudhur</p></td></tr>
+  
+  <tr><td><p><a href="https://www.cse.iitb.ac.in/infolab/Data/Courses/CS632/Papers/Cascades-graefe.pdf"><b>The Cascades Framework for Query Optimization</b></a></p><p>Goetz Graefe</p></td></tr>
+  
   <tr><td><p><a href="https://danluu.com/deconstruct-files/"><b>Files are fraught with peril</b></a></p><p>Dan Luu</p></td></tr>
   
   <tr><td><p><a href="https://www.tbray.org/ongoing/When/201x/2019/11/17/Bits-On-the-Wire"><b>Bits On The Wire </b></a></p><p>Tim Bray</p></td></tr>
