@@ -4,6 +4,8 @@ title: "Postgres: Caches and Invalidation"
 ---
 # Postgres: Caches and Invalidation
 
+June 14, 2019
+
 The other day, while debugging a patch to fix a memory leak bug in Postgres 12,  I got to learn
 quite a bit about the *caches* that are used internally in Postgres and the (internal) machanics of
 *invalidating* them when the cached content becomes stale.  I thought to write down the details
@@ -138,5 +140,3 @@ See the C source code files if interested.
 * Invalidation interface: [src/include/utils/inval.h](https://git.postgresql.org/gitweb/?p=postgresql.git;f=src/include/utils/inval.h;hb=HEAD)
 * Invalidation message sharing interface: [src/include/storage/sinval.h](https://git.postgresql.org/gitweb/?p=postgresql.git;f=src/include/storage/sinval.h;hb=HEAD)
 * Invalidation message sharing data structures interface: [src/include/storage/sinvaladt.h](https://git.postgresql.org/gitweb/?p=postgresql.git;f=src/include/storage/sinvaladt.h;hb=HEAD)
-
-June 14, 2019
