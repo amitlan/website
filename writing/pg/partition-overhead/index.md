@@ -63,7 +63,9 @@ planning times of selecting from a regular non-partitioned table:
 
 a table with 10 partitions:
 
-```                           QUERY PLAN                            
+
+```
+                          QUERY PLAN                            
 -----------------------------------------------------------------
  Append  (cost=0.00..406.00 rows=20400 width=12)
    ->  Seq Scan on foo_1  (cost=0.00..30.40 rows=2040 width=12)
