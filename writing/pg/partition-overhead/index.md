@@ -95,7 +95,6 @@ another with 100:
    ->  Seq Scan on foo_100  (cost=0.00..30.40 rows=2040 width=12)
  Planning Time: 2.357 ms
 (102 rows)
-
 ```
 
 The planning times with 1000 and 10000 partitions are roughly 21 and 252 ms.  All
