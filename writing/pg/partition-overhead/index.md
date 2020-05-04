@@ -91,7 +91,7 @@ another with 100:
    ->  Seq Scan on foo_1  (cost=0.00..30.40 rows=2040 width=12)
    ->  Seq Scan on foo_2  (cost=0.00..30.40 rows=2040 width=12)
    ->  Seq Scan on foo_3  (cost=0.00..30.40 rows=2040 width=12)
-   ...
+   ..
    ->  Seq Scan on foo_98  (cost=0.00..30.40 rows=2040 width=12)
    ->  Seq Scan on foo_99  (cost=0.00..30.40 rows=2040 width=12)
    ->  Seq Scan on foo_100  (cost=0.00..30.40 rows=2040 width=12)
