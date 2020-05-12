@@ -45,13 +45,13 @@ puts proportionally more time into making it.  That can be explained as follows:
 must be scanned to answer a query, Postgres planner considers between a few alternatives of the best
 way to do the scan -- sequentially go through all the records in the table and match against the
 filter, use an index suitable to the filter to get the matching records, use a bitmap scan, etc.
-Postgres can only make these decisions for tables that actually store data, that is, have on-disk
-file storing the records and indexes pointing into those.  For a table that is partitioned, only its
-partitions stores data, whereas the table itself is just a logical object with only logical properties
-such as columns, constraints, etc.  So to scan a partitioned table, Postgres must scan all its
-partitions and hence the planner must consider whether to use a sequential scan, index scan, bitmap scan,
-etc. for each of them.  To see that the planner is actually spending time doing that, compare the
-planning times of selecting from a regular non-partitioned table:
+Postgres can only make these decisions for tables that actually store data, that is, have a file on
+disk to store the records and indexes pointing to those.  For a table that is partitioned, only its
+partitions store data, whereas the table itself only has logical properties like columns, constraints,
+etc.  So to scan a partitioned table, Postgres must scan all its partitions and hence the planner must
+consider whether to use a sequential scan, index scan, bitmap scan, etc. for each of them.  To see that
+the planner is actually spending time doing that, see the planning times of selecting from a regular
+non-partitioned table:
 
 ```
                       QUERY PLAN                       
