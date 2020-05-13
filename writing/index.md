@@ -6,7 +6,7 @@ title: Writing
 <hr>
 Things I wrote down recently.
 
-<table>
+<table cellspacing="15">
   <tr>
     <td><p>June 14, 2019</p></td><td><p><a href="pginval"><b>Postgres: Caches and Invalidation</b></a></p></td>
   </tr>
