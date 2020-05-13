@@ -7,7 +7,7 @@ title: Links
 Interesting links that I came across on the Internet recently.
 
 <table cellspacing="15">
-  <tr><td><td><p>Surajit Chaudhuri</p></td><p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/pods98-tutorial.pdf"><b>An Overview of Query Optimization in Relational Systems</b></a></p></td></tr>
+  <tr><td><td><p>Surajit Chaudhuri</p></td><td><p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/pods98-tutorial.pdf"><b>An Overview of Query Optimization in Relational Systems</b></a></p></td></tr>
   
   <tr><td><p><a href="https://www.cse.iitb.ac.in/infolab/Data/Courses/CS632/Papers/Cascades-graefe.pdf"><b>The Cascades Framework for Query Optimization</b></a></p><p>Goetz Graefe</p></td></tr>
   
