@@ -6,7 +6,7 @@ title: Pictures
 <hr>
 Pictures I took recently.
 
-<table>
+<table tablespacing="15">
   <tr>
     <td><p>June 22, 2019</p></td><td><p><a href="ebisu-meguro"><b>Ebisu, Meguro</b></a></p></td>
   </tr>
