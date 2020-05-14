@@ -9,7 +9,7 @@ May 14, 2020
 
 If your shop uses logical replication to selectively replicate tables between two
 PostgreSQL clusters and you also happen to rely on partitioning for some of those
-tables, you may have gotten annoyed by this error on the publishing server:
+tables, you may have gotten annoyed by seeing this error on the publishing server:
 
 ```
 CREATE PUBLICATION "pub" FOR TABLE "foo";
