@@ -74,7 +74,7 @@ Upgrading the receiving server to Postgres 13 will fix that for you.  The
 receiving server now accepts the changes to be received into partitioned tables.
 Those changes are routed to the correct partitions, which of course is
 based on the locally defined partition key and bounds and has nothing to do
-with which partition the affected rows were present in the publishing server.
+with which partition the affected rows were present in on the publishing server.
 
 To summarize:
 
