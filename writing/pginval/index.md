@@ -7,7 +7,7 @@ title: "Postgres: Caches and Invalidation"
 June 14, 2019
 
 The other day, while debugging a patch to fix a memory leak bug in Postgres 12,  I got to learn
-quite a bit about the *caches* that are used internally in Postgres and the (internal) machanics of
+quite a bit about the *caches* that are used internally in Postgres and the internal machanics of
 *invalidating* them when the cached content becomes stale.  I thought to write down the details
 while they are still in the accessible part of my brain.
 
