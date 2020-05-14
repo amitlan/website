@@ -27,7 +27,7 @@ With Postgres 13, partitioned tables can now be directly added to publications.
 By default, publishing a partitioned table by adding it to publication is really
 just a shorthand for publishing all of its present and future leaf partitions.
 This still implies though that matching partitions must be present on the receiving
-end. Actually, `INSERT`, `UPDATE`, `DELETE` operations on partitioned tables are
+end. Actually, `INSERT`, `UPDATE`, `DELETE` operations on a partitioned table are
 physically applied to its leaf partitions and so each operation's `WAL` record
 (or specifically logical information contained in it) contains the leaf partitions'
 schema information.  Because logical replication publisher plugin (`pgoutput`)
