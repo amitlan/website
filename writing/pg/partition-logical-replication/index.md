@@ -31,7 +31,7 @@ just a shorthand for publishing all of its present and future leaf partitions.
 This still implies though that matching partitions must be present on the receiving
 server. Actually, `INSERT`, `UPDATE`, `DELETE` operations on a partitioned table are
 physically applied to its leaf partitions and so each operation's `WAL` record
-(or specifically logical information contained in it) contains the leaf partitions'
+(or specifically, the logical information contained in it) contains the leaf partitions'
 schema information.  Because logical replication publisher plugin (`pgoutput`)
 generates logical change records to publish by decoding `WAL`, those records thus
 contain leaf partition information. That is why the receiving server must have the
