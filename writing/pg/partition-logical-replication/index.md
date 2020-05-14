@@ -86,8 +86,8 @@ is disabled by default, meaning the changes are published using the name
 of the leaf partition that is actually changed by the replicated operation.
 
 3. On receiving server, changes can now be received into partitioned tables,
-whereas previously only non-partitioned tables were allowed, which meant
-that partitions would have to match one-to-one.
+whereas previously only non-partitioned tables were allowed, which allows
+to replicate between paritioned tables with different sets of partitions.
 
 If performance of replication is something you care about, then it’s better to
 avoid relying on #2 and #3 above, because there is a certain overhead associated
