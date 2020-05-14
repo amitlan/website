@@ -6,9 +6,9 @@ title: "Postgres 13: Partitioned tables can now be replicated"
 ## ...slightly more conveniently
 
 If your shop uses logical replication to selectively replicate tables between two
-PostgreSQL clusters and you also happen to rely on partitioning for some of your
-tables that need to be replicated, you may have been faced with a frustrating
-situation that would start with encountering this error on the publishing server:
+PostgreSQL clusters and you also happen to rely on partitioning for some of those
+tables, you may have been faced with possibly somewhat annoying situation of getting
+this error on the publishing server:
 
 ```
 CREATE PUBLICATION "pub" FOR TABLE "foo";
@@ -21,26 +21,25 @@ That is, you cannot replicate partitioned tables directly.  As the hint says, yo
 can replicate the individual (leaf) partitions by explicitly adding them to the
 publication, provided your partition set on the receiving end matches one-to-one
 with the published set of partitions.  It is perhaps manageable by having your
-partitioning DDL script also have some code to manage the publications membership
+partitioning DDL script also have some code to manage the publication status
 of individual partitions.
 
 With Postgres 13, partitioned tables can now be directly added to publications.
 By default, publishing a partitioned table by adding it to publication is really
-just a shorthand for publishing all of its leaf partitions without actually
-adding them to the publication.  This still implies that a matching partition
-set must be present on the receiving end.  Actually, `INSERT`, `UPDATE`,
-`DELETE` operations on partitioned tables are physically applied to its leaf
-partitions and so each operation's `WAL` record (or specifically its logical
-portion) contains the leaf partitions' schema information.  Because logical
-replication publisher plugin (`pgoutput`) generates records to publish by
-decoding `WAL`, individual logical changes to be published thus contain leaf
-partition information. That is why the receiving end must have the same leaf
-partitions present to be able to consume the changes, hopefully matching in not
-just the name, but also the partition bound.
+just a shorthand for publishing all of its present and future leaf partitions
+without actually adding them to the publication.  This still implies though that
+a matching partition set must be present on the receiving end. Actually, `INSERT`,
+`UPDATE`, `DELETE` operations on partitioned tables are physically applied to its
+leaf partitions and so each operation's `WAL` record (or specifically logical
+information contained in it) contains the leaf partitions' schema information.
+Because logical replication publisher plugin (`pgoutput`) generates change records
+to publish by decoding `WAL`, individual logical changes to be published thus
+contain leaf partition information. That is why the receiving end must have the
+same leaf partitions present to be able to consume the changes, hopefully matching
+in not just the name, but also the partition bound.
 
-
-Optionally, you can ask the partitioned table changes to be published using its
-own schema, which can be done with the following new publication parameter:
+If that sounds too restrictive to you, you can now ask the partitioned table changes
+to be published using its own schema as follows:
 
 ```
 CREATE PUBLICATION "pub" FOR TABLE "foo" WITH (publish_via_partition_root = true);
@@ -57,13 +56,14 @@ are published.
 
 This feature to replicate using an ancestor's schema allows the receiving end to
 consume the received changes without having the matching leaf partitions present,
-as is required when you don't use the new `publish_via_partition_root` option for
-publishing.  The changes can be received into either a non-partitioned table or a
-partitioned table of the same name as the published ancestor.  The receiving table
-may also contain a different set of partitions than those of the published table.
-Actually, receiving changes into a partitioned table is also something you couldn't
-do before.  You may have seen the following error with a receiving server that's
-running on Postgres 12 or less:
+as is required when you don't enable the new `publish_via_partition_root` option for
+publishing, which is also the default.  The changes can be received into either a
+non-partitioned table or a  partitioned table of the same name as the published
+ancestor.  The receiving table may also contain a different set of partitions than
+those of the published table.
+
+Actually, receiving changes into a partitioned table is also something that wasn't
+allowed before; you may have seen the following error on a receiving server:
 
 ```
 create subscription sub connection '$connection_string' publication pub;
@@ -71,4 +71,25 @@ ERROR:  cannot use relation "public.foo" as logical replication target
 DETAIL:  "public.foo" is a partitioned table.
 ```
 
-Upgrading the receiving server to Postgres 13 will fix that. 
+Upgrading the receiving server to Postgres 13 will fix that.
+
+To summarize:
+
+1. On publishing server, you can now add partitioned tables directly to
+publications, causing the changes of its leaf partitions to be published.
+
+2. While those changes are published with leaf partition's name by default,
+that can be switched to publishing with the ancestor's name (commonly the
+root partitioned table) by enabling the new publication parameter
+`publish_via_partition_root`
+
+3. On receiving server, changes can now be applied to partitioned tables,
+whereas previously only non-partitioned tables were allowed.  This
+limitation meant that partitions would have to match one-to-one for
+the changes to be successfully replicated.
+
+If performance of replication is something you care about, then it's
+better to avoid relying on #2 and #3 above, because there is a certain
+overhead associated with it, even though very minimal.  Especially, if
+you are ensuring that matching leaf partitions are present on both servers,
+using only #1 gets the job done.
