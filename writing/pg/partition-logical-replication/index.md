@@ -2,8 +2,10 @@
 layout: writing
 title: "Postgres 13: Partitioned tables can now be replicated"
 ---
-# Postgres 13: Partitioned tables can now be replicated
-## ...slightly more conveniently
+# Partitioned tables can now be replicated
+## ...a bit more conveniently
+
+May 14, 2020
 
 If your shop uses logical replication to selectively replicate tables between two
 PostgreSQL clusters and you also happen to rely on partitioning for some of those
@@ -91,5 +93,5 @@ to replicate between paritioned tables with different sets of partitions.
 
 If performance of replication is something you care about, then it’s better to
 avoid relying on #2 and #3 above, because there is a certain overhead associated
-with it, even though very minimal. Especially, if you are ensuring that matching
-leaf partitions are present on both servers, using only #1 might be enough for you.
+with it, even though very minimal. Especially, if you keep a matching set of
+leaf partitions on the two servers anyway, using only #1 might be enough for you.
