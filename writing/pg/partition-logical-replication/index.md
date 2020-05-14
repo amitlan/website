@@ -3,7 +3,7 @@ layout: writing
 title: "Postgres 13: Partitioned tables can now be replicated"
 ---
 # Postgres 13: Partitioned tables can now be replicated
-## ...a slightly more conveniently
+## ...slightly more conveniently
 
 If your shop uses logical replication to selectively replicate tables between two
 PostgreSQL clusters, you may have been faced with a frustrating situation that would
