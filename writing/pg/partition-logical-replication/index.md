@@ -18,8 +18,8 @@ HINT:  You can add the table partitions individually.
 
 That is, you cannot replicate partitioned tables directly.  As the hint says, you
 can replicate the individual (leaf) partitions by explicitly adding them to the
-publication, provided partitions on the receiving end matches one-to-one with the
-published partitions.  It is perhaps manageable by having your partitioning DDL
+publication, provided the set of partitions on the receiving end matches one-to-one
+with the published partitions.  It is perhaps manageable by having your partitioning DDL
 script also have some code to manage the publication status of individual
 partitions.
 
