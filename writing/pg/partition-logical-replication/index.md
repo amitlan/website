@@ -1,8 +1,8 @@
 ---
 layout: writing
-title: "Postgres 13: Partitioned tables can now be replicated"
+title: "Postgres 13: Partitioned Tables Can Now Be Replicated"
 ---
-# Partitioned tables can now be replicated
+# Partitioned Tables Can Now Be Replicated
 ## ...a bit more conveniently
 
 May 14, 2020
