@@ -3,6 +3,7 @@ layout: writing
 title: "Postgres 13: Partitioned tables can now be replicated"
 ---
 # Postgres 13: Partitioned tables can now be replicated
+## ...a slightly more conveniently
 
 If your shop uses logical replication to selectively replicate tables between two
 PostgreSQL clusters, you may have been faced with a frustrating situation that would
@@ -25,14 +26,14 @@ of individual partitions.
 With Postgres 13, partitioned tables can now be directly added to publications.
 By default, publishing a partitioned table by adding it to publication is really
 just a shorthand for publishing all of its leaf partitions without actually
-adding them to the publication.  This means that, by default, a matching partition
-set must be present on the receiving end.  Actually, any `INSERT`, `UPDATE`,
+adding them to the publication.  This implies that a matching partition
+set must be present on the receiving end.  Actually, all `INSERT`, `UPDATE`,
 `DELETE` operations on partitioned tables are physically applied to its leaf
 partitions and hence the operation's `WAL` record contains the leaf partitions'
 schema information.  Because logical replication publisher plugin (`pgoutput`)
 generates records to publish by decoding `WAL`, individual logical changes to be
-published contain leaf partition information. That is why the receiving end must
-have the same leaf partitions present.
+published thus contain leaf partition information. That is why the receiving end
+must have the same leaf partitions present to be able to consume the changes.
 
 Optionally, you can ask the partitioned table changes to be published using its
 own schema, which can be done with a new publication parameter:
