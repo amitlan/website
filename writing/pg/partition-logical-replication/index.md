@@ -7,7 +7,7 @@ title: "Postgres 13: Partitioned tables can now be replicated"
 
 If your shop uses logical replication to selectively replicate tables between two
 PostgreSQL clusters and you also happen to rely on partitioning for some of those
-tables, you may have seen this error on the publishing server:
+tables, you may have been annoyed this error on the publishing server:
 
 ```
 CREATE PUBLICATION "pub" FOR TABLE "foo";
