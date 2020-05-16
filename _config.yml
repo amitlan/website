@@ -1,2 +1,7 @@
 title: Amit Langote
 theme: jekyll-theme-primer
+plugins:
+  - jekyll-feed
+title: Amit Langote's personal site
+description: Amit Langote's personal site
+author: Amit Langote
