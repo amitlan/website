@@ -1,6 +1,7 @@
 ---
 layout: writing
 title: "Postgres: Caches and Invalidation"
+tags: [pg]
 ---
 # Postgres: Caches and Invalidation
 

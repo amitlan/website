@@ -1,6 +1,7 @@
 ---
 layout: writing
 title: "Partitioned tables can now be replicated"
+tags: [pg]
 ---
 # Partitioned tables can now be replicated
 ## ...a bit more conveniently
