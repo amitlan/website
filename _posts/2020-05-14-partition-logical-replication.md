@@ -1,7 +1,7 @@
 ---
 layout: writing
 title: "Postgres: partitioned tables can now be replicated"
-tags: [pg]
+tags: [writing, pg]
 last_updated: 2020-05-14
 ---
 # Postgres: partitioned tables can now be replicated

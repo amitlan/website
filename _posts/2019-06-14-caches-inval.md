@@ -1,7 +1,7 @@
 ---
 layout: writing
 title: "Postgres: caches and invalidation"
-tags: [pg]
+tags: [writing, pg]
 last_updated: 2019-06-14
 ---
 # Postgres: caches and invalidation
