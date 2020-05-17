@@ -6,14 +6,11 @@ title: Writing
 <hr>
 Things I wrote down recently.
 
-<table cellspacing="15">
-  <tr>
-    <td><p><a href="pg/partition-logical-replication"><b>Partitioned tables can now be replicated</b></a></p></td><td><p>May 14, 2020</p></td>
-  </tr>
-  <tr>
-    <td><p><a href="pg/caches-inval"><b>Postgres: Caches and Invalidation</b></a></p></td><td><p>June 14, 2019</p></td>
-  </tr>
-  <tr>
-    <td><p><a href="intro"><b>Entry #0</b></a></p></td><td><p>June 12, 2019</p></td>
-  </tr>
-</table>
+<ul class="posts">
+  {% for post in site.posts %}
+    <li>
+      <div class="publish-date"><time pubdate="">{{ post.date | date: "%B %-d, %Y" }}</time></div>
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>

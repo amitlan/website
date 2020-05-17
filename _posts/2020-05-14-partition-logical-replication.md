@@ -2,6 +2,7 @@
 layout: writing
 title: "Partitioned tables can now be replicated"
 tags: [pg]
+last_updated: 2020-05-14
 ---
 # Partitioned tables can now be replicated
 ## ...a bit more conveniently

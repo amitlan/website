@@ -2,6 +2,7 @@
 layout: writing
 title: "Postgres: Caches and Invalidation"
 tags: [pg]
+last_updated: 2019-06-14
 ---
 # Postgres: Caches and Invalidation
 
