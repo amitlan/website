@@ -1,0 +1,6 @@
+---
+layout: none
+title: "Partitioning in Postgres: How Far We've Come"
+external_url: "https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/slides/pgconf-eu-2019.pdf"
+tags: [talks]
+---
