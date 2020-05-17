@@ -4,8 +4,6 @@ title: Links
 ---
 <a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Talks</a> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <b>Links</b>
 <hr>
-Interesting links that I came across on the Internet recently.
-
 <table cellspacing="15">
   <tr><td><p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/pods98-tutorial.pdf"><b>An Overview of Query Optimization in Relational Systems</b></a></p></td><td><p>Surajit Chaudhuri</p></td></tr>
   

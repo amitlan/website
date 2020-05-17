@@ -4,8 +4,6 @@ title: Talks
 ---
 <a href="https://amitlan.github.io/writing">Writing</a> | <b>Talks</b> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <a href="https://amitlan.github.io/bookmarks">Links</a>
 <hr>
-Links to presentation slides of the talks I gave recently.
-
 <table cellspacing="15">
   <tr>	  
     <td>
