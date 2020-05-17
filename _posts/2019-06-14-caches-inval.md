@@ -4,7 +4,7 @@ title: "Postgres: Caches and invalidation"
 tags: [pg]
 last_updated: 2019-06-14
 ---
-# Postgres: Caches and Invalidation
+# Postgres: caches and Invalidation
 
 June 14, 2019
 
