@@ -1,6 +1,8 @@
 ---
 layout: photos
-title: Ebisu & Meguro
+title: "Ebisu & Meguro"
+tags: [pics]
+last_updated: 2019-06-22 
 ---
 
 Rainy day stroll around Ebisu and Meguro.

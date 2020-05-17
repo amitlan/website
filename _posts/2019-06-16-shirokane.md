@@ -1,6 +1,8 @@
 ---
 layout: photos
 title: Shirokane
+tags: [pics]
+last_updated: 2019-06-16 
 ---
 
 Sunny day stroll at [Institute of Nature Study](http://www.ins.kahaku.go.jp/english/) located near Meguro Station.
