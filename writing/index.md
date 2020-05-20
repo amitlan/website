@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Writing
+title: Blog
 ---
 <table cellspacing="15" class="posts">
   {% for post in site.tags["writing"] %}

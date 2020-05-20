@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Amit Langote
+title: Home
 ---
 <img src="files/me.jpg" alt="hi" class="inline"/>
 <p>Hi, I'm Amit, currently based in Tokyo, Japan. I'm a software engineer with an extensive experience contributing to PostgreSQL open source project. I work for <a href="https://www.enterprisedb.com/">EnterpriseDB</a>.  Previously, I spent some 7 years at <a href="https://www.sic.ecl.ntt.co.jp/e/oss/">NTT Open Source Software Center</a>.</p>
