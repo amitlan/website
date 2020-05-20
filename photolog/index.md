@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Pictures
+title: Photos
 ---
 <table cellspacing="15" class="posts">
   {% for post in site.tags["pics"] %}
