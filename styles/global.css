@@ -1,0 +1,26 @@
+a{
+	color:#eba613;
+}
+
+nav a, footer div a{
+	margin:0px 5px;
+}
+
+footer{
+	margin-top:40px;
+	text-align: center;
+}
+
+body{
+	font-family: 'Garamond';
+	margin: auto;
+	padding:20px;
+	max-width: 600px;
+	text-align: left;
+	background-color:white;
+}
+
+img{
+	max-width: 600px;
+	border: 2px solid #eba613;
+}
