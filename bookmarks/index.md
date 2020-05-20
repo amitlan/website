@@ -6,7 +6,7 @@ title: Links
   {% for post in site.tags["links"] %}
     <li>
       <a href="{{ post.external_url }}">{{ post.title }}</a>
-      <div class="text">{{ post.description }}</div>
+      <div class="text" style="color: #f7fafc">{{ post.description }}</div>
     </li>
   {% endfor %}
 </ul>
