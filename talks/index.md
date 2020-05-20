@@ -2,10 +2,11 @@
 layout: default
 title: Talks
 ---
-<table cellspacing="15" class="posts">
+<ul class="posts">
   {% for post in site.tags["talks"] %}
-  <tr>
-    <td><a href="{{ post.external_url }}"><b>{{ post.title }}</b></a></td><td>{{ post.description}}</td>
-  </tr>
+    <li>
+      <a href="{{ post.external_url }}">{{ post.title }}</a>
+      <div class="publish-date"><time pubdate="">{{ post.description }}</div>
+    </li>
   {% endfor %}
-</table>
+</ul>
