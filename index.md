@@ -2,9 +2,10 @@
 layout: default
 title: Amit Langote
 ---
-<img src="files/me.jpg" alt="hi" float="right"/>
 
 <p>
+<img src="files/me.jpg" alt="hi" float="right"/>
+
 Hi, I'm a software engineer with an extensive experience contributing to
 PostgreSQL open source project. I work for
 <a href="https://www.enterprisedb.com/">EnterpriseDB</a>
