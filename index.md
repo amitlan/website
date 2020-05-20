@@ -7,9 +7,9 @@ title: Amit Langote
 <img src="files/me.jpg" alt="hi" align="right"/>
 
 Hi, I'm a software engineer with an extensive experience contributing to
-PostgreSQL open source project. I work for
+PostgreSQL open source project. I currently work for
 <a href="https://www.enterprisedb.com/">EnterpriseDB</a>
-and previously spent some 7 years at
+and previously spent some 7 years working at
 <a href="https://www.sic.ecl.ntt.co.jp/e/oss/">NTT Open Source Software Center</a>.
 </p>
 
