@@ -2,8 +2,6 @@
 layout: default
 title: Pictures
 ---
-<a href="https://amitlan.github.io/writing">Writing</a> | <a href="https://amitlan.github.io/talks">Talks</a> | <b>Pictures</b> | <a href="https://amitlan.github.io/bookmarks">Links</a>
-<hr>
 <table cellspacing="15" class="posts">
   {% for post in site.tags["pics"] %}
   <tr>

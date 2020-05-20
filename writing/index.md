@@ -2,8 +2,6 @@
 layout: default
 title: Writing
 ---
-<b>Writing</b> | <a href="https://amitlan.github.io/talks">Talks</a> | <a href="https://amitlan.github.io/photolog">Pictures</a> | <a href="https://amitlan.github.io/bookmarks">Links</a>
-<hr>
 <table cellspacing="15" class="posts">
   {% for post in site.tags["writing"] %}
   <tr>
