@@ -27,7 +27,9 @@ or check my profiles at
 <a href="https://gitlab.com/amitlan">GitLab</a>,
 <a href="https://stacko verflow.com/users/683402">StackOverflow</a>,
 <a href="https://linkedin.com/in/amitlan">LinkedIn</a>.
+</p>
 
+<p>
 I also keep a <a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/resume.pdf">PDF</a>
 around listing my professional skills and experiences.
 </p>
