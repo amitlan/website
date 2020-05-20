@@ -15,8 +15,8 @@ and previously spent some 7 years at
 
 <p>
 I was born and got my education in the western state of Maharashtra of India.
-My first job out of college brought me to Tokyo, Japan, where I now live with
-wife and a kid.
+My first job out of college brought me to Tokyo, Japan, where I live with wife
+and a kid.
 </p>
 
 <p>
