@@ -6,7 +6,7 @@ title: Talks
   {% for post in site.tags["talks"] %}
     <li>
       <a href="{{ post.external_url }}">{{ post.title }}</a>
-      <div class="text" style="color: #f7fafc">{{ post.description }}</div>
+      <div class="text" style="color:#a0aec0">{{ post.description }}</div>
     </li>
   {% endfor %}
 </ul>
