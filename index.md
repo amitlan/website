@@ -20,7 +20,7 @@ and a kid.
 </p>
 
 <p>
-You may contact me at my personal <a href="mailto:amitlangote09@gmail.com">email</a>,
+You can reach me at my personal <a href="mailto:amitlangote09@gmail.com">email</a>,
 or check my profiles at
 <a href="https://twitter.com/amitlan">Twitter</a>,
 <a href="https://github.com/amitlan">GitHub</a>,
