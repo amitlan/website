@@ -4,7 +4,7 @@ title: Amit Langote
 ---
 
 <p>
-<img src="files/me2.jpg" alt="hi" align="right"/>
+<img src="files/me2.jpeg" alt="hi" align="right"/>
 
 Hi, I'm a software engineer with an extensive experience contributing to
 PostgreSQL open source project. I currently work for
