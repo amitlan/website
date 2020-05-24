@@ -21,11 +21,7 @@ and a kid.
 
 <p>
 You can reach me at my personal <a href="mailto:amitlangote09@gmail.com">email</a>,
-or check my profiles at
-<a href="https://twitter.com/amitlan">Twitter</a>,
-<a href="https://github.com/amitlan">GitHub</a>,
-<a href="https://gitlab.com/amitlan">GitLab</a>,
-<a href="https://stacko verflow.com/users/683402">StackOverflow</a>,
+or on <a href="https://twitter.com/amitlan">Twitter</a>,
 <a href="https://linkedin.com/in/amitlan">LinkedIn</a>.
 </p>
 
