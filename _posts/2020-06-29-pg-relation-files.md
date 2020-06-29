@@ -23,7 +23,7 @@ select pg_relation_filepath('foo'::regclass);
 
 The function `pg_relation_filepath()` gives the path of the file, relative
 to root of the data directory, where a given relation's contents are
-*eventually* flushed down to.  The contents can be inspectd.
+*eventually* flushed down to.  The contents can be inspected.
 
 ```
 $ hexdump -C $PGDATA/base/13586/16384
