@@ -41,7 +41,7 @@ $ hexdump -C $PGDATA/base/13586/16384
 You can see the strings that were inserted, inter-mixed with some bookkeeping
 data that only Postgres knows how to interpret.
 
-What about partitioned tables:
+What about partitioned tables?
 
 ```
 create table bar (a text) partition by list (a);
