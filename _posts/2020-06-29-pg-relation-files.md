@@ -158,4 +158,4 @@ $ hexdump -C $PGDATA/base/13586/2620
 00002000
 ```
 
-Maybe you can make out the trigger name from that gibberish.
+Maybe you can make out the trigger name from the rest of the gibberish.
