@@ -8,8 +8,9 @@ last_updated: 2020-05-14
 
 June 29, 2020
 
-Postgres stores the data one inserts into tables in files, one for each table, using
-a Postgres-specific binary format.
+Postgres stores the data that one inserts into tables in files, where there is one for
+each table (actually more if it's bigger than a gigabyte), using a Postgres-specific
+binary format.
 
 ```
 create table foo (a text);
@@ -92,7 +93,7 @@ $ hexdump -C $PGDATA/base/13586/16399
 00002000
 ```
 
-In fact, indexes are similarly files all the way down.
+Indexes are similarly files all the way down.
 
 ```
 create index on foo (a);
@@ -124,8 +125,9 @@ $ hexdump -C $PGDATA/base/13586/16430
 00004000
 ```
 
-What about a system catalog table like `pg_trigger`, which stores the metadata
-about triggers -- a file, like any other.
+It should be no surprise that the contents of system catalog tables such as
+`pg_trigger`, which stores the metadata about triggers, are stored in files,
+like any other relation:
 
 ```
 create function print_new () returns trigger as $$
