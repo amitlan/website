@@ -8,8 +8,8 @@ last_updated: 2020-05-14
 
 June 29, 2020
 
-Postgres stores the data one tells it to store in files using a Postgres-specific
-binary format. 
+Postgres stores the data one inserts into tables in files, one for each table, using
+a Postgres-specific binary format.
 
 ```
 create table foo (a text);
@@ -23,7 +23,7 @@ select pg_relation_filepath('foo'::regclass);
 
 The function `pg_relation_filepath()` gives the path of the file, relative
 to root of the data directory, where a given relation's contents are
-*eventually* flushed down to.
+*eventually* flushed down to.  The contents can be inspectd.
 
 ```
 $ hexdump -C $PGDATA/base/13586/16384
@@ -91,3 +91,67 @@ $ hexdump -C $PGDATA/base/13586/16399
 00001ff0  01 00 01 00 02 08 18 00  0f 78 79 78 79 78 79 00  |.........xyxyxy.|
 00002000
 ```
+
+In fact, indexes are similarly files all the way down.
+
+```
+create index on foo (a);
+insert into foo values ('pqpqpq');
+select pg_relation_filepath('foo_a_idx'::regclass);
+ pg_relation_filepath 
+----------------------
+ base/13586/16430
+(1 row)
+
+$ hexdump -C $PGDATA/base/13586/16430
+00000000  00 00 00 00 38 d2 64 01  00 00 00 00 48 00 f0 1f  |....8.d.....H...|
+00000010  f0 1f 04 20 00 00 00 00  62 31 05 00 04 00 00 00  |... ....b1......|
+00000020  01 00 00 00 00 00 00 00  01 00 00 00 00 00 00 00  |................|
+00000030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 f0 bf  |................|
+00000040  01 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00001ff0  00 00 00 00 00 00 00 00  00 00 00 00 08 00 00 00  |................|
+00002000  00 00 00 00 c8 dc 64 01  00 00 00 00 24 00 c0 1f  |......d.....$...|
+00002010  f0 1f 04 20 00 00 00 00  e0 9f 20 00 c0 9f 20 00  |... ...... ... .|
+00002020  d0 9f 20 00 00 00 00 00  00 00 00 00 00 00 00 00  |.. .............|
+00002030  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00003fc0  00 00 00 00 03 00 10 40  0f 70 71 70 71 70 71 00  |.......@.pqpqpq.|
+00003fd0  00 00 00 00 01 00 10 40  0f 78 79 78 79 78 79 00  |.......@.xyxyxy.|
+00003fe0  00 00 00 00 02 00 10 40  0f 61 62 61 62 61 62 00  |.......@.ababab.|
+00003ff0  00 00 00 00 00 00 00 00  00 00 00 00 03 00 00 00  |................|
+00004000
+```
+
+What about a system catalog table like `pg_trigger`, which stores the metadata
+about triggers -- a file, like any other.
+
+```
+create function print_new () returns trigger language plpgsql as $$ begin raise notice '%', new; return new; end; $$;
+create trigger foo_insert_trigger before insert on foo for row execute function print_new();
+select pg_relation_filepath('pg_trigger'::regclass);
+ pg_relation_filepath 
+----------------------
+ base/13586/2620
+(1 row)
+
+$ hexdump -C $PGDATA/base/13586/2620
+00000000  00 00 00 00 d8 6b 65 01  00 00 00 00 1c 00 60 1f  |.....ke.......`.|
+00000010  00 20 04 20 00 00 00 00  60 9f 3a 01 00 00 00 00  |. . ....`.:.....|
+00000020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00001f60  0b 02 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00001f70  01 00 13 00 03 08 20 ff  ff 00 00 00 00 00 00 00  |...... .........|
+00001f80  30 40 00 00 00 40 00 00  00 00 00 00 66 6f 6f 5f  |0@...@......foo_|
+00001f90  69 6e 73 65 72 74 5f 74  72 69 67 67 65 72 00 00  |insert_trigger..|
+00001fa0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00001fc0  00 00 00 00 00 00 00 00  00 00 00 00 2f 40 00 00  |............/@..|
+00001fd0  07 00 4f 00 00 00 00 00  00 00 00 00 00 00 00 00  |..O.............|
+00001fe0  00 00 00 00 60 00 00 00  01 00 00 00 00 00 00 00  |....`...........|
+00001ff0  15 00 00 00 00 00 00 00  00 00 00 00 03 00 00 00  |................|
+00002000
+```
+
+Maybe you can make out the trigger name from that gibberish.
