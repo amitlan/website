@@ -2,15 +2,15 @@
 layout: writing
 title: "Postgres: where is the data"
 tags: [writing, pg]
-last_updated: 2020-05-14
+last_updated: 2020-06-29
 ---
 # Postgres: where is the data
 
 June 29, 2020
 
-Postgres stores the data that one inserts into tables in files, where there is one for
-each table (actually more than one if it's bigger than a gigabyte), using a Postgres-
-specific binary format.
+Postgres stores the data that one inserts into tables in files.  There is one for
+each table (actually more than one if the table is bigger than a gigabyte), which
+stores the user data using a Postgres-specific binary format.
 
 ```
 create table foo (a text);
@@ -23,8 +23,9 @@ select pg_relation_filepath('foo'::regclass);
 ```
 
 The function `pg_relation_filepath()` gives the path of the file, relative
-to root of the data directory, where a given relation's contents are
-*eventually* flushed down to.  The contents can be inspected.
+to root of the data directory, that a given relation's contents are
+*eventually* flushed down to.  The binary contents can be inspected, for
+example, like this:
 
 ```
 $ hexdump -C $PGDATA/base/13586/16384
@@ -39,7 +40,7 @@ $ hexdump -C $PGDATA/base/13586/16384
 00002000
 ```
 
-You can see the strings that were inserted, inter-mixed with some bookkeeping
+You can see the strings that were inserted inter-mixed with some bookkeeping
 data that only Postgres knows how to interpret.
 
 What about partitioned tables?
@@ -125,9 +126,8 @@ $ hexdump -C $PGDATA/base/13586/16430
 00004000
 ```
 
-It should be no surprise that the contents of system catalog tables such as
-`pg_trigger`, which stores the metadata about triggers, are stored in files,
-like any other relation:
+It should come as no surprise to you then that the contents of system catalog tables,
+such as `pg_trigger` which stores the metadata about triggers, are stored in files.
 
 ```
 create function print_new () returns trigger as $$
