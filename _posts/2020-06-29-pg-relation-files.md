@@ -128,8 +128,12 @@ What about a system catalog table like `pg_trigger`, which stores the metadata
 about triggers -- a file, like any other.
 
 ```
-create function print_new () returns trigger language plpgsql as $$ begin raise notice '%', new; return new; end; $$;
-create trigger foo_insert_trigger before insert on foo for row execute function print_new();
+create function print_new () returns trigger as $$
+   begin raise notice '%', new; return new; end;
+   $$ language plpgsql;
+create trigger foo_insert_trigger
+    before insert on foo for row
+    execute function print_new();
 select pg_relation_filepath('pg_trigger'::regclass);
  pg_relation_filepath 
 ----------------------
