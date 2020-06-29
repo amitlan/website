@@ -9,8 +9,8 @@ last_updated: 2020-05-14
 June 29, 2020
 
 Postgres stores the data that one inserts into tables in files, where there is one for
-each table (actually more if it's bigger than a gigabyte), using a Postgres-specific
-binary format.
+each table (actually more than one if it's bigger than a gigabyte), using a Postgres-
+specific binary format.
 
 ```
 create table foo (a text);
