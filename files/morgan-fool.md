@@ -2,6 +2,8 @@
 layout: default
 title: Morgan Fool
 ---
+<html>
+        <body>
         <a href="https://www.fool.com/investing/2016/08/30/investing-is-a-fascinating-business.aspx" title="Investing Is a Fascinating Business " data-id="article-list">
                     <h4>Investing Is a Fascinating Business </h4></a>
         <a href="https://www.fool.com/investing/2016/08/22/expectations-vs-forecasts.aspx" title="Expectations vs. Forecasts " data-id="article-list">
@@ -5364,3 +5366,5 @@ title: Morgan Fool
                     <h4>Leveraging Trouble</h4></a>
         <a href="https://www.fool.com/investing/dividends-income/2007/10/01/scary-company-great-investment.aspx" title="Scary Company, Great Investment" data-id="article-list">
                     <h4>Scary Company, Great Investment</h4></a>
+                </body>
+        </html>>
