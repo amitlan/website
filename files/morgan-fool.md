@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Blog
+title: Morgan Fool
 ---
         <a href="https://www.fool.com/investing/2016/08/30/investing-is-a-fascinating-business.aspx" title="Investing Is a Fascinating Business " data-id="article-list">
                     <h4>Investing Is a Fascinating Business </h4></a>
