@@ -1,4 +1,7 @@
-                    <div class="article-listing" id="article_listing">
+---
+layout: default
+title: Blog
+---
         <a href="https://www.fool.com/investing/2016/08/30/investing-is-a-fascinating-business.aspx" title="Investing Is a Fascinating Business " data-id="article-list">
                     <h4>Investing Is a Fascinating Business </h4></a>
         <a href="https://www.fool.com/investing/2016/08/22/expectations-vs-forecasts.aspx" title="Expectations vs. Forecasts " data-id="article-list">
