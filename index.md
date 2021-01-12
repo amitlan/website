@@ -25,4 +25,3 @@ You can reach me at my personal <a href="mailto:amitlangote09@gmail.com">email</
   <a href="https://linkedin.com/in/amitlan">LinkedIn</a>, or take a look at my
   <a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/resume.pdf">resume</a>.
 </p>
-</p>
