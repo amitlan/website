@@ -3,8 +3,9 @@ a{
 }
 
 blockquote {
-	background-color:#909090;
+	background-color:#DCDCDC;
 	font-size: '8px'
+	margin: 20px
 }
 
 nav a, footer div a{
