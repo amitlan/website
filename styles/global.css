@@ -6,7 +6,13 @@ blockquote {
     margin: 0;
 }
 
-blockquote p code {
+blockquote p {
+    padding: 15px;
+    background: #eee;
+    border-radius: 5px;
+    font-size: 8px;
+}
+blockquote code {
     padding: 15px;
     background: #eee;
     border-radius: 5px;
