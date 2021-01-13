@@ -3,28 +3,7 @@ a{
 }
 
 blockquote {
-    margin: 0;
-}
-
-blockquote p {
-    padding: 15px;
-    background: #eee;
-    border-radius: 5px;
-    font-size: 8px;
-}
-blockquote code {
-    padding: 15px;
-    background: #eee;
-    border-radius: 5px;
-    font-size: 8px;
-}
-
-blockquote p::before {
-    content: '\201C';
-}
-
-blockquote p::after {
-    content: '\201D';
+    font-size: 90%;
 }
 
 nav a, footer div a{
