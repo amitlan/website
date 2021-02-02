@@ -1,6 +1,6 @@
 ---
 layout: none
 title: Daniel Vassallo
-external_url: https://twitter.com/dvassallo
+external_url: https://dvassallo.com/
 tags: people
 ---
