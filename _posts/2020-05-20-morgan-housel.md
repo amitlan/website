@@ -1,6 +1,6 @@
 ---
 layout: none
 title: Morgan Housel
-external_url: https://twitter.com/morganhousel
+external_url: http://www.morganhousel.com/
 tags: people
 ---
