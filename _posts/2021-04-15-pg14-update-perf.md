@@ -105,14 +105,14 @@ With thousands of partitions not out of the question in many cases, the
 aforementioned time and memory consumption behavior would make updating such
 partition hierarchies very expensive, especially if many of the partitions would
 not be pruned.  (Actually, even though the base implementation for updating
-inheritance/partition hierarchies is inefficient as described, [428b260f87]
-(https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=428b260f87)
+inheritance/partition hierarchies is inefficient as described,
+[428b260f87](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=428b260f87)
 made the damage less severe for partitioning in the cases where partition
 pruning can be used.)
 
 With that background out of the way, let's take a look at what updating
-a table looks like after [86dc90056d]
-(https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d)
+a table looks like after
+[86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d)
 went in:
 
 Without any children:
