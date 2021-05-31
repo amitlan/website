@@ -8,26 +8,27 @@ last_updated: 2021-04-15
 
 April 15, 2021 (draft)
 
-Some of the changes committed to the v14 development branch will help
-`update` queries run a bit faster, especially on tables with many columns
-of which only few are typically updated in a given query. More importantly,
-those changes allowed refactoring of some lagacy code for handling `update`
-and `delete` queries on partitioned tables, which will make them run still
-faster compared to v13, and will enable them to use execution-time partition
-pruning, which until v13, could only be used by `select` queries.  Finally,
-these changes for partitioned tables will allow prepared `update` and `delete`
-queries run faster compared to v13, especially at higher partition counts.
-TLDR: check out the commit messages of
-[86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
+Tom Lane committed a few changes ([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
 [c5b7ba4e67a](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c5b7ba4e67a),
-[a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782)
-written by Tom Lane who committed all of this work.
+[a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782))
+to the v14 development branch that will help `update` and `delete` queries run
+just little a bit faster, especially on tables with many columns of which only few are
+typically updated in a given query. More importantly, those changes allowed refactoring
+of some lagacy code for handling `update` and `delete` queries on partitioned tables, which
+will make them run still faster compared to v13, and will enable them to use
+execution-time partition pruning (only `select` queries could use execution-time
+pruning before).  These changes for partitioned tables taken together will allow
+prepared `update` and `delete` queries run faster compared to v13 by taking
+advantage of the new execution-time pruning capability, especially at higher
+partition counts.
 
-To see how `update` would work in prior releases, consider this example:
+To explain what has changed about how `update` works, let's take a look at the
+plan a typical update uses to retrieve the rows that need to be updated.  First,
+running on v13, it looks as follows:
 
 ```
 $ psql
-psql (13.2)
+psql (13.3)
 Type "help" for help.
 
 postgres=# create table foo (a int, b int, c int);
@@ -42,21 +43,23 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 (4 rows)
 ```
 
-Focus in particular on the `Output: (a + 1), b, c, ctid` line.  It shows that
-the scan node that finds and returns the tuples to update has been made to
-output the *whole* tuple that matches the target table's tuple descriptor,
-along with the system column `ctid` that tells where the tuple is located
-in the relation's file.  The top-level node that performs the actual update
-takes that output tuple, makes note of `ctid` before removing it from the
-tuple, and calls the update routine of the target table's access method with
-that tuple as the *new* tuple to replace the old one.  The old tuple is in
-turn identified by just noted `ctid` that is also passed to the update
-routine.
+The `Output: (a + 1), b, c, ctid` line shows that the scan node that finds
+and returns the rows to updated outputs not just the value to assign to the
+changed column `a` in this case but also the values of the unchanged columns
+`b` and `c` taken from the old row to be updated.  There's also a system
+column `ctid` in the output tuple which tells the later steps that perform
+the actual update the location of a given row to be updated.  The top-level
+node, after it gets a tuple corresponding to `Output` from the scan node,
+calls the table's access method's update API, passing it the full *new* row
+which it obtains by simply *filtering* out the `ctid` column; the scan node
+basically produced the full new row by itself. The `ctid` value that is taken
+out of the scan node output is also passed after to the access method's update
+API.
 
 Now consider the case where `foo` has child tables.  For the purposes of this
 illustration, I am going to use traditional inheritance (not declarative
-partitioning), where the individual child tables can have columns that are not
-in the parent table.
+partitioning), because it allows the individual child tables to have columns that
+are not in the parent table:
 
 ```
 postgres=# create table foo_child1 (d int) inherits (foo);
