@@ -2,11 +2,11 @@
 layout: writing
 title: "Postgres: UPDATE will work differently in v14"
 tags: [writing, pg]
-last_updated: 2021-06-09
+last_updated: 2021-06-08
 ---
 # Postgres: UPDATE will work differently in v14
 
-June 9, 2021
+June 8, 2021
 
 Long story short, Tom Lane committed a few changes
 ([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
