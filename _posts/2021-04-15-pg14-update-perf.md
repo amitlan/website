@@ -22,7 +22,7 @@ the execution of `update`/`delete` plans will allow prepared `update` and `delet
 queries on partitioned tables run faster compared to v13, especially at higher
 partition counts.
 
-To understand what changes, let's consider how Postgres typically carries out
+To understand what changed, let's consider how Postgres typically carries out
 an update statement. The plan for an `update` consists of a node to retrieve the
 rows to be updated and another node on top that invokes the target table's
 access method routine to perform the actual update and peforms other auxiliary
@@ -80,17 +80,17 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 The scan node now only outputs the values for the changed columns and so the
 top-level node must fetch the old row again (not as expensive as it may sound)
 to form the full *new* row.  `EXPLAIN` unfortunately isn't of much help to
-figure out where exactly the new row gets formed happens, but maybe it's not
-that important for users to know.
+figure out where exactly the new row gets formed, but maybe it's not that
+important for users to know.
 
-One performance benefit of this new arrangement is that if the scan node
-needs to pass narrower tuples up to the top-level node.  That passing of
-tuple across nodes occurs by column-by-column copying of the data, either
-by value or by reference.  Given that, as there will now be fewer columns
-to be passed across due to this change, one can expect this overhead to
-be less.  That effect would be even more pronounced if the scan node is not
-a simple table scan like in the above example, but say a join, in which case
-there are more plan levels for the data to have to be passed across.
+One performance benefit of this new arrangement is that the scan node now
+needs to pass narrower tuples up to the top-level node.  Because that passing of
+tuples across the nodes occurs by copying the data column-by-column (whether by
+value or by reference), and as there will now be fewer columns to be passed
+across due to this change (only the changed columns), one can expect this
+overhead to be less.  That effect would be even more pronounced if the scan
+node is not a simple table scan like in the above example, but say a join, in
+which case there are more plan levels for the data to have to be passed across.
 
 <!--
 Now consider the case where `foo` has child tables.  For the purposes of this
