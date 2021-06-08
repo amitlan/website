@@ -12,19 +12,27 @@ Tom Lane committed a few changes ([86dc90056d](https://git.postgresql.org/gitweb
 [c5b7ba4e67a](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c5b7ba4e67a),
 [a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782))
 to the v14 development branch that will help `update` and `delete` queries run
-just little a bit faster, especially on tables with many columns of which only few are
-typically updated in a given query. More importantly, those changes allowed refactoring
-of some lagacy code for handling `update` and `delete` queries on partitioned tables, which
-will make them run still faster compared to v13, and will enable them to use
-execution-time partition pruning (only `select` queries could use execution-time
-pruning before).  These changes for partitioned tables taken together will allow
-prepared `update` and `delete` queries run faster compared to v13 by taking
-advantage of the new execution-time pruning capability, especially at higher
+little a bit faster, especially on tables with many columns of which only few are
+typically updated in a given query. More importantly, those changes allowed the
+refactoring of some lagacy code for handling `update` and `delete` queries on
+partitioned tables, which will make them run still faster compared to v13, and
+will enable them to use execution-time partition pruning (only `select` queries
+could use execution-time pruning before).  These and some other improvements in
+the execution of `update`/`delete` plans will allow prepared `update` and `delete`
+queries on partitioned tables run faster compared to v13, especially at higher
 partition counts.
 
-To explain what has changed about how `update` works, let's take a look at the
-plan a typical update uses to retrieve the rows that need to be updated.  First,
-running on v13, it looks as follows:
+To understand what changes, let's consider how Postgres typically carries out
+an update statement. The plan for an `update` consists of a node to retrieve the
+rows to be updated and another node on top that invokes the target table's
+access method routine to perform the actual update and peforms other auxiliary
+actions like updating the indexes, fire triggers, etc.  While the latter (the
+top-level node) works mostly the same in v14, there's a new task for it now due
+to some changes made to the output format of the former (the node producing the
+rows to be updated).  Previously, that node produced the whole *new* row that
+the top-level node could pass as-is to the table access method, which in turn
+would use it replace the old version.  This is how it would look:
+
 
 ```
 $ psql
@@ -43,19 +51,48 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 (4 rows)
 ```
 
-The `Output: (a + 1), b, c, ctid` line shows that the scan node that finds
-and returns the rows to updated outputs not just the value to assign to the
-changed column `a` in this case but also the values of the unchanged columns
-`b` and `c` taken from the old row to be updated.  There's also a system
-column `ctid` in the output tuple which tells the later steps that perform
-the actual update the location of a given row to be updated.  The top-level
-node, after it gets a tuple corresponding to `Output` from the scan node,
-calls the table's access method's update API, passing it the full *new* row
-which it obtains by simply *filtering* out the `ctid` column; the scan node
-basically produced the full new row by itself. The `ctid` value that is taken
-out of the scan node output is also passed after to the access method's update
-API.
+Note the `Output: (a + 1), b, c, ctid` line of the `Seq Scan` node.  Along with
+the new value for the `a` column that is changed in the statement, it also
+contains the values for unchanged columns `b`, `c`.  (Note that they come from
+the old row that was read from the relation file and matched against the
+`where` quals by the scan node.)
 
+In v14, the scan node no longer outputs the values for `b` and `c`, the unchanged
+columns:
+
+```
+$ psql
+psql (14devel)
+Type "help" for help.
+
+postgres=# create table foo (a int, b int, c int);
+CREATE TABLE
+postgres=# explain verbose update foo set a = a + 1 where b = 1;
+                            QUERY PLAN
+-------------------------------------------------------------------
+ Update on public.foo  (cost=0.00..35.52 rows=0 width=0)
+   ->  Seq Scan on public.foo  (cost=0.00..35.52 rows=10 width=10)
+         Output: (a + 1), ctid
+         Filter: (foo.b = 1)
+(4 rows)
+```
+
+The scan node now only outputs the values for the changed columns and so the
+top-level node must fetch the old row again (not as expensive as it may sound)
+to form the full *new* row.  `EXPLAIN` unfortunately isn't of much help to
+figure out where exactly the new row gets formed happens, but maybe it's not
+that important for users to know.
+
+One performance benefit of this new arrangement is that if the scan node
+needs to pass narrower tuples up to the top-level node.  That passing of
+tuple across nodes occurs by column-by-column copying of the data, either
+by value or by reference.  Given that, as there will now be fewer columns
+to be passed across due to this change, one can expect this overhead to
+be less.  That effect would be even more pronounced if the scan node is not
+a simple table scan like in the above example, but say a join, in which case
+there are more plan levels for the data to have to be passed across.
+
+<!--
 Now consider the case where `foo` has child tables.  For the purposes of this
 illustration, I am going to use traditional inheritance (not declarative
 partitioning), because it allows the individual child tables to have columns that
@@ -182,3 +219,4 @@ of a single plan.  The new system column `tableoid` is there to identify which
 child table a given tuple to be updated comes from, which is now necessary,
 because the target relations can no longer mapped one-to-one with their
 corresponding subplans.
+-->
