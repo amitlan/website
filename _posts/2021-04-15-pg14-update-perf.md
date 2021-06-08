@@ -186,4 +186,4 @@ inefficiencies left to be fixed, so the performance is still affected negatively
 as the partitions count grows.  To end this post, here is a graph of performance
 of a prunable prepared `update` of a 10-column partitioned table with various
 partition counts.
-![v14 prepared ppdate performance for partitioned tables](s3://amitlan.com/files/pg14-update-perf-partitions.png)
+![v14 prepared ppdate performance for partitioned tables](https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/pg14-update-perf-partitions.png)
