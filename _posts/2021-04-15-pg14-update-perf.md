@@ -92,6 +92,23 @@ overhead to be less.  That effect would be even more pronounced if the scan
 node is not a simple table scan like in the above example, but say a join, in
 which case there are more plan levels for the data to have to be passed across.
 
+Okay, so how does this help partitioning?
+
+Because the old way of carrying out updates needed the scan nodes to produce
+a full new row matching the target table's schema, the plan would need to
+contain a separate node for each child table when updating inherited/partitioned
+tables.  Remember that non-partitioning inheritance allows each child table to
+have their own columns, so this hassle was necessary in that case, but an
+annoyance for partitioning which doesn't allow such thing.
+
+Now that the scan node only needs to produce the updated columns in its
+output, and only the columns that are present in the root parent table
+(and hence all of the child tables) can be updated, there's no need to
+create a node for each child.  Instead, there only needs to be one node
+for the root parent that covers all the children, essentially what you'd
+get if one were only `select`ing the columns to be updated from the root
+parent table.
+
 <!--
 Now consider the case where `foo` has child tables.  For the purposes of this
 illustration, I am going to use traditional inheritance (not declarative
