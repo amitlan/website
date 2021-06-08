@@ -2,13 +2,14 @@
 layout: writing
 title: "Postgres: UPDATE will work differently in v14"
 tags: [writing, pg]
-last_updated: 2021-04-15
+last_updated: 2021-06-09
 ---
 # Postgres: UPDATE will work differently in v14
 
-April 15, 2021 (draft)
+June 9, 2021 (draft)
 
-Tom Lane committed a few changes ([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
+Long story short, Tom Lane committed a few changes
+([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
 [c5b7ba4e67a](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c5b7ba4e67a),
 [a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782))
 to the v14 development branch that will help `update` and `delete` queries run
@@ -21,6 +22,8 @@ could use execution-time pruning before).  These and some other improvements in
 the execution of `update`/`delete` plans will allow prepared `update` and `delete`
 queries on partitioned tables run faster compared to v13, especially at higher
 partition counts.
+
+Now the long story.
 
 To understand what changed, let's consider how Postgres typically carries out
 an update statement. The plan for an `update` consists of a node to retrieve the
@@ -161,23 +164,26 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 ```
 
 There are still as many nodes to scan children as there were before,
-but because they are added at the bottom-most level of the plan tree,
-not at the top, they can be added more cheaply now.
+but because they are added at the bottom the plan tree, not at the top as
+before, they can be added more cheaply.  (This statement only makes sense
+if you consider that the amount of work the planner has to do to create a
+node at the bottom less versus creating it at the top, which I have decided
+not to describe the details of here.)
 
-<!--
-Because scan nodes no longer emit columns that are not changed, the output
-looks the same for all child relations (some may notice that the new value for
-the changed column `a` (that is, `a + 1`) is now computed by a separate node
-that is above the scan node, but that's a deficiency of the current
-implementation when dealing with traditional inheritance).
+While this new arrangement makes it a bit faster to make the plan for `update`
+on a partitioned table which is good in and of itself, a more important bit is that
+the plan will now have an `Append` node in it to scan the partitions.  What's great
+about it is that that means that `update` (and `delete`) can now use execution-time
+partition pruning, because the `Append` provides that ability. Having that ability
+allows generic plans that may used when using prepared statements for `update` and
+`delete` to be executed without having to process the partitions that need not
+processed per the query's prunable `where` clauses.
 
-Anyway, this simple change that the scan nodes no longer have to emit unchanged
-columns allows the planner to avoid making the scan node for each child relation
-through a separate replanning iteration, which would previously be needed to
-add unchanged columns in the scan nodes' output target lists.  Now the scan nodes
-look just as they would if it were for a `select` query, appearing as leaf nodes
-of a single plan.  The new system column `tableoid` is there to identify which
-child table a given tuple to be updated comes from, which is now necessary,
-because the target relations can no longer mapped one-to-one with their
-corresponding subplans.
--->
+With the new execution-time pruning ability and a few other efficiency improvements
+in how the plan for `update` are executed now results in better performance,
+especially at higher partition counts.  Although, there are still architectural
+inefficiencies left to be fixed, so the performance is still affected negatively
+as the partitions count grows.  To end this post, here is a graph of performance
+of a prunable prepared `update` of a 10-column partitioned table with various
+partition counts.
+![v14 prepared ppdate performance for partitioned tables](s3://amitlan.com/files/pg14-update-perf-partitions.png)
