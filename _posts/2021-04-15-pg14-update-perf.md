@@ -99,21 +99,7 @@ a full new row matching the target table's schema, the plan would need to
 contain a separate node for each child table when updating inherited/partitioned
 tables.  Remember that non-partitioning inheritance allows each child table to
 have their own columns, so this hassle was necessary in that case, but an
-annoyance for partitioning which doesn't allow such thing.
-
-Now that the scan node only needs to produce the updated columns in its
-output, and only the columns that are present in the root parent table
-(and hence all of the child tables) can be updated, there's no need to
-create a node for each child.  Instead, there only needs to be one node
-for the root parent that covers all the children, essentially what you'd
-get if one were only `select`ing the columns to be updated from the root
-parent table.
-
-<!--
-Now consider the case where `foo` has child tables.  For the purposes of this
-illustration, I am going to use traditional inheritance (not declarative
-partitioning), because it allows the individual child tables to have columns that
-are not in the parent table:
+annoyance for partitioning which doesn't allow such thing.  This is how it looked:
 
 ```
 postgres=# create table foo_child1 (d int) inherits (foo);
@@ -139,60 +125,13 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 (13 rows)
 ```
 
-Well, now there are 3 scan nodes, accounting for all tables that must be
-updated.  Scan nodes for the child tables have to produce output tuples that
-match their own tuple descriptors, which do not match that of the parent
-table `foo` in this case, as can be seen in their respective `Output: ...`
-lines.  In fact, it is to cater to such multi-table updates, where each table
-may have columns not present in the others, that the planner would make the
-individual scan nodes emit an output tuple that matches their corresponding
-target table's tuple descriptor. To make that work, the planner would basically
-have to replan the original query for each target relation; for example, as
-`update foo_child1 set a = a + 1 where b = 1` for the child relation
-`foo_child1` so that the resulting scan node produces a tuple suitable for that
-child relation.  That approach meant that if there are many child tables to be
-updated, the planner would spend a lot of time and also memory doing that,
-because the implementation wouldn't return the memory used for making the scan
-node for a given child relation before moving on to the next one.
-
-Declarative partition hierarchies, even though they don't allow partitions to
-have columns that are not in the root partitioned table, are handled with same
-the code as the traditional inheritance hierarchies for simplicity (laziness?!).
-With thousands of partitions not out of the question in many cases, the
-aforementioned time and memory consumption behavior would make updating such
-partition hierarchies very expensive, especially if many of the partitions would
-not be pruned.  (Actually, even though the base implementation for updating
-inheritance/partition hierarchies is inefficient as described,
-[428b260f87](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=428b260f87)
-made the damage less severe for partitioning in the cases where partition
-pruning can be used.)
-
-With that background out of the way, let's take a look at what updating
-a table looks like after
-[86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d)
-went in:
-
-Without any children:
-
-```
-$ psql
-psql (14devel)
-Type "help" for help.
-
-postgres=# create table foo (a int, b int, c int);
-CREATE TABLE
-postgres=# explain verbose update foo set a = a + 1 where b = 1;
-                            QUERY PLAN
--------------------------------------------------------------------
- Update on public.foo  (cost=0.00..35.52 rows=0 width=0)
-   ->  Seq Scan on public.foo  (cost=0.00..35.52 rows=10 width=10)
-         Output: (a + 1), ctid
-         Filter: (foo.b = 1)
-(4 rows)
-```
-
-Now the scan node produces only the columns that are updated.  With child
-tables:
+Now that the scan node only needs to produce the updated columns in its
+output, and only the columns that are present in the root parent table
+(and hence all of the child tables) can be updated, there's no need to
+create a node for each child.  Instead, there only needs to be one node
+for the root parent that covers all the children, essentially what you'd
+get if you were only `select`ing the columns to be updated from the root
+parent table, which looks like this now:
 
 ```
 postgres=# create table foo_child1 (d int) inherits (foo);
@@ -221,6 +160,11 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 (16 rows)
 ```
 
+There are still as many nodes to scan children as there were before,
+but because they are added at the bottom-most level of the plan tree,
+not at the top, they can be added more cheaply now.
+
+<!--
 Because scan nodes no longer emit columns that are not changed, the output
 looks the same for all child relations (some may notice that the new value for
 the changed column `a` (that is, `a + 1`) is now computed by a separate node
