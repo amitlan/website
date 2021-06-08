@@ -6,7 +6,7 @@ last_updated: 2021-06-09
 ---
 # Postgres: UPDATE will work differently in v14
 
-June 9, 2021 (draft)
+June 9, 2021
 
 Long story short, Tom Lane committed a few changes
 ([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
@@ -20,8 +20,7 @@ partitioned tables, which will make them run still faster compared to v13, and
 will enable them to use execution-time partition pruning (only `select` queries
 could use execution-time pruning before).  These and some other improvements in
 the execution of `update`/`delete` plans will allow prepared `update` and `delete`
-queries on partitioned tables run faster compared to v13, especially at higher
-partition counts.
+queries on partitioned tables run faster compared to v13.
 
 Now the long story.
 
@@ -30,11 +29,12 @@ an update statement. The plan for an `update` consists of a node to retrieve the
 rows to be updated and another node on top that invokes the target table's
 access method routine to perform the actual update and peforms other auxiliary
 actions like updating the indexes, fire triggers, etc.  While the latter (the
-top-level node) works mostly the same in v14, there's a new task for it now due
+top-level node) mostly works the same in v14, there's a new task for it now due
 to some changes made to the output format of the former (the node producing the
 rows to be updated).  Previously, that node produced the whole *new* row that
 the top-level node could pass as-is to the table access method, which in turn
-would use it replace the old version.  This is how it would look:
+would replace the old version with the new one.  This is how it would look as
+a plan:
 
 
 ```
@@ -88,12 +88,13 @@ important for users to know.
 
 One performance benefit of this new arrangement is that the scan node now
 needs to pass narrower tuples up to the top-level node.  Because that passing of
-tuples across the nodes occurs by copying the data column-by-column (whether by
-value or by reference), and as there will now be fewer columns to be passed
-across due to this change (only the changed columns), one can expect this
-overhead to be less.  That effect would be even more pronounced if the scan
-node is not a simple table scan like in the above example, but say a join, in
-which case there are more plan levels for the data to have to be passed across.
+tuples across nodes occurs by copying the data column-by-column (whether by
+value or by reference depending the column type), and as there will now be fewer
+columns to be passed across due to this change (only the changed columns), one
+can expect the overhead of that copying to be less.  That effect would be even
+more pronounced if the scan node is not a simple table scan like in the above
+example, but say a join, in which case there are more plan levels for the data
+to have to be passed across.
 
 Okay, so how does this help partitioning?
 
@@ -101,8 +102,9 @@ Because the old way of carrying out updates needed the scan nodes to produce
 a full new row matching the target table's schema, the plan would need to
 contain a separate node for each child table when updating inherited/partitioned
 tables.  Remember that non-partitioning inheritance allows each child table to
-have their own columns, so this hassle was necessary in that case, but an
-annoyance for partitioning which doesn't allow such thing.  This is how it looked:
+have its own columns, so this hassle was necessary in that case, but an
+annoyance for partitioning which doesn't allow such a thing.  This is how it
+looked:
 
 ```
 postgres=# create table foo_child1 (d int) inherits (foo);
@@ -167,23 +169,21 @@ There are still as many nodes to scan children as there were before,
 but because they are added at the bottom the plan tree, not at the top as
 before, they can be added more cheaply.  (This statement only makes sense
 if you consider that the amount of work the planner has to do to create a
-node at the bottom less versus creating it at the top, which I have decided
-not to describe the details of here.)
+node at the bottom is less versus creating it at the top.)
 
 While this new arrangement makes it a bit faster to make the plan for `update`
 on a partitioned table which is good in and of itself, a more important bit is that
 the plan will now have an `Append` node in it to scan the partitions.  What's great
 about it is that that means that `update` (and `delete`) can now use execution-time
-partition pruning, because the `Append` provides that ability. Having that ability
+partition pruning, because the `Append` node provides that ability. Having that ability
 allows generic plans that may used when using prepared statements for `update` and
 `delete` to be executed without having to process the partitions that need not
 processed per the query's prunable `where` clauses.
 
 With the new execution-time pruning ability and a few other efficiency improvements
-in how the plan for `update` are executed now results in better performance,
-especially at higher partition counts.  Although, there are still architectural
-inefficiencies left to be fixed, so the performance is still affected negatively
-as the partitions count grows.  To end this post, here is a graph of performance
-of a prunable prepared `update` of a 10-column partitioned table with various
-partition counts.
+in how the plan for an `update` is executed now results in better performance.
+Although, there are still architectural inefficiencies left to be fixed, so the
+performance still tapers off as the partitions count grows.  To end this post,
+here is a graph showing the performance of a prunable prepared `update` of a 10-column
+partitioned table with various partition counts.
 ![v14 prepared ppdate performance for partitioned tables](https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/pg14-update-perf-partitions.png)
