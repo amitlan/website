@@ -13,7 +13,7 @@ Long story short, Tom Lane committed a few changes
 [c5b7ba4e67a](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c5b7ba4e67a),
 [a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782))
 to the v14 development branch that will help `update` and `delete` queries run
-little a bit faster, especially on tables with many columns of which only few are
+little a bit faster, especially on tables with many columns of which only a few are
 typically updated in a given query. More importantly, those changes allowed the
 refactoring of some lagacy code for handling `update` and `delete` queries on
 partitioned tables, which will make them run still faster compared to v13, and
