@@ -10,7 +10,7 @@ I'm a software engineer with an extensive experience contributing to
 PostgreSQL open source project. I currently work for
 <a href="https://www.enterprisedb.com/">EDB</a>
 and previously spent some 7 years working at
-<a href="https://https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>.
+<a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>.
 </p>
 
 <p>
