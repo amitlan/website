@@ -24,7 +24,7 @@ queries on partitioned tables run faster compared to v13.
 
 Now the long story.
 
-To understand what changed, let's consider how Postgres typically carries out
+To understand what changed, let's consider how Postgres carries out
 an update statement. The plan for an `update` consists of a node to retrieve the
 rows to be updated and another node on top that invokes the target table's
 access method routine to perform the actual update and peforms other auxiliary
