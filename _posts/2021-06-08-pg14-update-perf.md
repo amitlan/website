@@ -89,7 +89,7 @@ important for users to know.
 One performance benefit of this new arrangement is that the scan node now
 needs to pass narrower tuples up to the top-level node.  Because that passing of
 tuples across nodes occurs by copying the data column-by-column (whether by
-value or by reference depending the column type), and as there will now be fewer
+value or by reference depending on the column type), and as there will now be fewer
 columns to be passed across due to this change (only the changed columns), one
 can expect the overhead of that copying to be less.  That effect would be even
 more pronounced if the scan node is not a simple table scan like in the above
