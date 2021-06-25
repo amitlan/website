@@ -165,7 +165,14 @@ postgres=# explain verbose update foo set a = a + 1 where b = 1;
 (16 rows)
 ```
 
-There are still as many nodes to scan children as there were before,
+You may notice that there's a `tableoid` column present in the output that
+wasn't there before.  It tells the top-level node the OID of the child
+table from which a given row to be updated came from.  Such an identity
+column was not necessary before, because each child table would have its own
+subplan.  Mapping from `tableoid` to the `update`/`delete` execution state
+struct of the relevant child table does add a tiny bit of overhead per row.
+
+Note that there are still as many nodes to scan children as there were before,
 but because they are added at the bottom the plan tree, not at the top as
 before, they can be added more cheaply.  (This statement only makes sense
 if you consider that the amount of work the planner has to do to create a
