@@ -15,7 +15,7 @@ Long story short, Tom Lane committed a few changes
 to the v14 development branch that will help `update` and `delete` queries run
 little a bit faster, especially on tables with many columns of which only a few are
 typically updated in a given query. More importantly, those changes allowed the
-refactoring of some lagacy code for handling `update` and `delete` queries on
+refactoring of some legacy code for handling `update` and `delete` queries on
 partitioned tables, which will make them run still faster compared to v13, and
 will enable them to use execution-time partition pruning (only `select` queries
 could use execution-time pruning before).  These and some other improvements in
