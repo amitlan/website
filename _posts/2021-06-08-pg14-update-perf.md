@@ -183,9 +183,9 @@ on a partitioned table which is good in and of itself, a more important bit is t
 the plan will now have an `Append` node in it to scan the partitions.  What's great
 about it is that that means that `update` (and `delete`) can now use execution-time
 partition pruning, because the `Append` node provides that ability. Having that ability
-allows generic plans that may be used when using prepared statements for `update` and
-`delete` to be executed without having to process the partitions that need not
-processed per the query's prunable `where` clauses.
+allows generic plans for prepared `update` and `delete` to be executed without having
+to process the partitions that need not processed per the query's prunable `where`
+clauses.
 
 With the new execution-time pruning ability and a few other efficiency improvements
 in how the plan for an `update` is executed now results in better performance.
