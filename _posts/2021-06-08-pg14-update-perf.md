@@ -9,7 +9,7 @@ last_updated: 2021-06-08
 June 8, 2021
 
 Long story short, Tom Lane committed a few changes
-([86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
+(commmits [86dc90056d](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=86dc90056d),
 [c5b7ba4e67a](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=c5b7ba4e67a),
 [a1115fa0782](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commit;h=a1115fa0782))
 to the v14 development branch that will help `update` and `delete` queries run
@@ -183,7 +183,7 @@ on a partitioned table which is good in and of itself, a more important bit is t
 the plan will now have an `Append` node in it to scan the partitions.  What's great
 about it is that that means that `update` (and `delete`) can now use execution-time
 partition pruning, because the `Append` node provides that ability. Having that ability
-allows generic plans that may used when using prepared statements for `update` and
+allows generic plans that may be used when using prepared statements for `update` and
 `delete` to be executed without having to process the partitions that need not
 processed per the query's prunable `where` clauses.
 
