@@ -1,10 +1,10 @@
 ---
 layout: writing
-title: "Postgres: Woes of Parameterized Queries With Partitioning"
+title: "Postgres: woes of parameterized queries with partitioning"
 tags: [writing, pg]
 last_updated: 2022-05-11
 ---
-# Postgres: Woes of Parameterized Queries With Partitioning
+# Postgres: woes of parameterized queries with partitioning
 
 May 11, 2022
 
