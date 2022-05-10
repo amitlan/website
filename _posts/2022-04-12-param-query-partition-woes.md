@@ -23,5 +23,9 @@ sent to the same backend process will look up the query's parse tree using the n
 given and execute its plan (either one created from scratch or a cached one, more on
 this in a bit) to produce the query's result rows.
 
-The point of this exercise is that it can save a lot of CPU cycles by not doing
-the parse/analyze/rewrite processing on every request
+The point of this exercise is that it can save a lot of CPU cycles by not redoing
+the parse/analyze/rewrite processing on every request, which is fine because the
+result of that processing is the exact same internal parse tree unless some object
+mentioned in the query was changed by DDL which happens much less frequently.  Even
+more CPU cycles are saved if the `EXECUTE` step is able to use a plan that is also
+cached (that is, along with the parse tree).
