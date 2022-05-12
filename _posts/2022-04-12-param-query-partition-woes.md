@@ -27,8 +27,15 @@ The point of this exercise is that it can save CPU cycles by not redoing the
 parse/analyze/rewrite processing on every request, which is fine because the result
 of that processing would be the exact same internal parse tree unless some object
 mentioned in the query was changed by DDL, something that tends to happen rather
-unfrequently.  One can see that using `pgbench`, using its `--protocol=querymode`
-option to run the benchmark queries in *simple* or *prepared* modes.
+unfrequently.  Even more CPU cycles are saved if the `EXECUTE` step is able to use
+a plan that is also cached, instead of building it from scratch for that particular
+execution.
+
+It is easy to check the performance benefit of performoing the queries this way using
+the handy `pgbench` tool. pgbench allows to specify which protocol to use when running
+the individual queries in the benchmark using the parameter `--protocol=querymode`.
+The value *simple* instructs it to execute the queries in one go and *prepared* to
+use the 2-stage method described above.
 
 ```
 $ pgbench -i > /dev/null 2>&1
@@ -54,26 +61,16 @@ and:
 ```
 $ pgbench -i > /dev/null 2>&1
 $ pgbench -S -t 100000 --protocol=prepared
-pgbench (15devel)
-starting vacuum...end.
-transaction type: <builtin: select only>
-scaling factor: 1
-query mode: prepared
-number of clients: 1
-number of threads: 1
-maximum number of tries: 1
-number of transactions per client: 100000
-number of transactions actually processed: 100000/100000
-number of failed transactions: 0 (0.000%)
+...
 latency average = 0.031 ms
 initial connection time = 9.686 ms
 tps = 32234.211200 (without initial connection time)
 ```
 
-So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?` is 0.031 ms when performed using parameterized query protocol versus 0.058 when using simple protocol.
+So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?`
+is 0.031 milliseconds when performed using the parameterized query protocol versus 0.058
+when using the simple protocol.
 
-Even more CPU cycles are saved if the `EXECUTE` step is able to use a plan that is
-also cached, instead of building it from scratch for that particular execution.
 The decision of whether or not to use a cached plan is made by the plancache module
 present in the backend that is involved in the processing of the `EXECUTE` statement.
 The way it does that is by keeping track of and comparing the costs of two types of
