@@ -67,8 +67,8 @@ tps = 32234.211200 (without initial connection time)
 ```
 
 So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?`
-is 0.031 milliseconds when performed using the parameterized query protocol versus 0.058
-when using the simple protocol.
+is 0.031 milliseconds when performed using the 2-stage protocol versus 0.058 when
+using the simple protocol.
 
 It's interesting to consider how the plan itself may be cached, because that is where the
 problems with partitioned tables that I want to talk about can be traced to.  The backend
