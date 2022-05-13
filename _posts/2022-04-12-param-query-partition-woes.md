@@ -85,21 +85,8 @@ would get by passing the parameter values, because the planner is smart enough, 
 example, to determine that an index on `colname` can be used to optimize both
 `colname = <constant-value>` and `colname = $1`.
 
-However, if the query contains a partitioned table, the planner's lack of access to
-parameter values means that the planner is unable to use partition pruning, because
-pruning relies on using the values mentioned in prunable conditions to select the
-matching partitions.
-
-The decision of whether or not to use a cached plan is made by the plancache module
-present in the backend that is involved in the processing of the `EXECUTE` statement.
-The way it does that is by keeping track of and comparing the costs of two types of
-plan: 1) that obtained by binding the values of parameters provided in the `EXECUTE`
-statement (that is by making them known to the planner), 2) that obtained by leaving
-the query parameters unbounded (that is, by leaving the planner in the dark about what
-their values are).  The former is called a "custom" plan, because the planner would have
-customized it to the given set of parameter values and the latter a "generic" plan,
-because it is not specific to any given set of parameter values.  By definition, only
-a generic plan is deemed reusable across multiple `EXECUTE`s of a given preapred query
-and thus cached.  It may seem as if a custom plan would always be cheaper than a generic
-plan, though given that the effort to create the plan itself may be significant when
-considered in terms of plan cost unit, generic plan often comes out ahead.
+However, if the query contains a partitioned table, in which case partition pruning can
+be very helpful to create an optimal plan, the parameter values not being available to
+the planner when creating a generic plan is a big problem, because partition pruning
+needs to see values of the parameters mentioned in prunable conditions to select the
+matching partitions.  Without pruning, the generic plan must include *all* partitions.
