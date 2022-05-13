@@ -18,8 +18,8 @@ name as its lookup key, followed by multiple *executions* using the statement `E
 a_name`, each of which will compute and return the query's output rows.
 
 The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of
-the actual constant values that may be present in the query's conditions, whose actual
-values are only supplied during a given `EXECUTE` invocation.  During each execution,
+the actual constant values that may be present in the query's conditions.  The values
+themselves are only supplied during a given `EXECUTE` invocation.  During each execution,
 the backend process will look up the parse tree in the hash table and make a plan based
 on it to compute the result of the query for given set of values of the paramters.
  
