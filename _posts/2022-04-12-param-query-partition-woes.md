@@ -71,7 +71,25 @@ is 0.031 milliseconds when performed using the parameterized query protocol vers
 when using the simple protocol.
 
 It's interesting to consider how the plan itself may be cached, because that is where the
-problems with partitioned tables that I want to talk about can be traced to.
+problems with partitioned tables that I want to talk about can be traced to.  The backend
+code relies on the plancache module which hosts the plan caching logic.  When presented
+with the parse tree of a query and the set of parameter values provided in `EXECUTE`, its
+job is to figure out if a plan matching the query already exists and if one does, check if
+it's still valid by acquiring read locks all the relations that it scans.  If any of the
+relations has changed since the plan was created, this validation steps detects those
+changes and triggers replanning.
+
+An important bit about such a cached plan is that plancache does not pass the parameter
+values that the `EXECUTE` would have provided to the planner, so it is a *generic*
+(parameter-value-indepedent) plan.  The plan is in most cases same as the one plancache
+would get by passing the parameter values, because the planner is smart enough, for
+example, to determine that an index on `colname` can be used to optimize both
+`colname = <constant-value>` and `colname = $1`.
+
+However, if the query contains a partitioned table, the planner's lack of access to
+parameter values means that the planner is unable to use partition pruning, because
+pruning relies on using the values mentioned in prunable conditions to select the
+matching partitions.
 
 The decision of whether or not to use a cached plan is made by the plancache module
 present in the backend that is involved in the processing of the `EXECUTE` statement.
