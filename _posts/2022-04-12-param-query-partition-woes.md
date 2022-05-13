@@ -12,25 +12,26 @@ Prepared statements (aka parameterized queries) suffer when you have partitioned
 tables mentioned in them.  Let's see why.
 
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
-it using the statement `PREPARE a_name AS <query>` when the connected Postgres backend
-process will parse-analyze the query and remember the parse tree in a hash table using
-the provided name as its lookup key, followed by multiple *executions* using the statement
-`EXECUTE a_name`, each of which will compute and return the query's output rows.  During
-each execution, the backend process looks up the parse tree in the hash table and makes
-a plan based on it to compute the result.
+it using `PREPARE a_name AS <query>` when the connected Postgres backend process will
+parse-analyze the query and remember the parse tree in a hash table using the provided
+name as its lookup key, followed by multiple *executions* using the statement `EXECUTE
+a_name`, each of which will compute and return the query's output rows.  The query
+specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of the actual
+constant values that may be present in the query's conditions, whose actual values are
+only supplied during a given `EXECUTE` invocation.  During each execution, the backend
+process will look up the parse tree in the hash table and make a plan based on it to
+compute the result of the query for given set of values of the paramters.
  
 The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not
 redoing the parse-analysis processing on every execution, which is fine because the result
 of that processing would be the exact same parse tree unless some object mentioned in the
 query was changed by DDL, something that tends to happen rather unfrequently.  Even more
 CPU cycles are saved if the `EXECUTE` step is able to use a plan that is also cached,
-instead of building it from scratch for that particular execution.
-
-It is easy to check the performance benefit of this 2-stage protocol of performing queries
-using the handy `pgbench` tool. It allows specifying which protocol to use when running
-the individual queries in the benchmark using the parameter `--protocol=querymode`.
-The value *simple* instructs it to execute the queries in one go and *prepared* to
-use the 2-stage method.
+instead of building it from scratch for that particular execution.  It is easy to check
+the performance benefit of this 2-stage protocol of performing queries using the handy
+`pgbench` tool, which allows specifying which protocol to use when running the benchmark
+queries using the parameter `--protocol=querymode`. The value *simple* instructs it to
+execute the queries in one go and *prepared* to use the 2-stage method.
 
 ```
 $ pgbench -i > /dev/null 2>&1
@@ -66,8 +67,8 @@ So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE ai
 is 0.031 milliseconds when performed using the parameterized query protocol versus 0.058
 when using the simple protocol.
 
-It's interesting to consider how the plan itself is cached, because that is where the
-problems with partitioned tables lie.
+It's interesting to consider how the plan itself may be cached, because that is where the
+problems with partitioned tables that I want to talk about can be traced to.
 
 The decision of whether or not to use a cached plan is made by the plancache module
 present in the backend that is involved in the processing of the `EXECUTE` statement.
