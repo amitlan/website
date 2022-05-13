@@ -14,8 +14,8 @@ tables mentioned in them.  Let's see why.
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
 it using `PREPARE a_name AS <query>` when the connected Postgres backend process will only
 parse-analyze the query and remember the parse tree in a (process-local) hash table using
-the provided name as its lookup key, followed by multiple *executions* using the statement
-`EXECUTE a_name`, each of which will compute and return the query's output rows.
+the provided name as its lookup key, followed by *execution* of the query using the
+statement `EXECUTE a_name`, each of which will compute and return the query's output rows.
 
 The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of
 the actual constant values in the query's conditions (like `WHERE`).  The values themselves
@@ -85,8 +85,15 @@ would get by passing the parameter values, because the planner is smart enough, 
 example, to determine that an index on `colname` can be used to optimize both
 `colname = <constant-value>` and `colname = $1`.
 
-However, if the query contains a partitioned table, in which case partition pruning can
-be very helpful to create an optimal plan, the parameter values not being available to
-the planner when creating a generic plan is a big problem, because partition pruning
-needs to see values of the parameters mentioned in prunable conditions to select the
-matching partitions.  Without pruning, the generic plan must include *all* partitions.
+Parameter values not being available to the planner when creating a generic plan can be a
+big problem if the query contains partitioned tables.  Partition pruning can be very helpful
+to create an optimal plan containing only the partitions whose bounds that match the values
+mentioned in the `WHERE` condition.  Without parameter values pruning cannot occur, so the
+generic plan must include *all* partitions.
+
+Note that pruning does occur during execution (*run-time pruning*) using the parameter values
+provided be `EXECUTE`, though there are a number of steps that must occur before the pruning
+occurs, each of which take O(n) time, where n is the number of partitions present in the
+generic plan.  One of those steps, the most expensive one, is the plancache's validation of
+the plan which must lock all relations mentioned in the plan.  The more partitions there are,
+the longer it will take this validation step to finish.
