@@ -13,9 +13,9 @@ tables mentioned in them.  Let's see why.
 
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
 it using `PREPARE a_name AS <query>` when the connected Postgres backend process will
-parse-analyze the query and remember the parse tree in a hash table using the provided
-name as its lookup key, followed by multiple *executions* using the statement `EXECUTE
-a_name`, each of which will compute and return the query's output rows.
+parse-analyze the query and remember the parse tree in a (process-local) hash table using
+the provided name as its lookup key, followed by multiple *executions* using the statement
+`EXECUTE a_name`, each of which will compute and return the query's output rows.
 
 The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of
 the actual constant values that may be present in the query's conditions.  The values
