@@ -1,41 +1,36 @@
 ---
 layout: writing
-title: "Postgres: woes of parameterized queries with partitioning"
+title: "Postgres: woes of prepared statements with partitioning"
 tags: [writing, pg]
 last_updated: 2022-05-11
 ---
-# Postgres: woes of parameterized queries with partitioning
+# Postgres: woes of prepared statements with partitioning
 
 May 11, 2022
 
-Parameterized queries (aka prepared statements) suffer when you partition tables
-mentioned in those queries.  Let's see why.
+Prepared statements (aka parameterized queries) suffer when you have partitioned
+tables mentioned in them.  Let's see why.
 
-Using the parameterized queries feagure allows a client to issue a query in two
-stages.  With Postgres, those two stages involve using the statement `PREPARE a_name AS <SQL>`
-the first time to pass the query text to the server to be remembered by the given
-name, followed by multiple invocations of the statement `EXECUTE a_name` each of
-which will compute and return the query's output rows.  The backend process which
-receives the `PREPARE` will parse, analyze, rewrite the query text and store the
-resulting C struct holding the parse tree in a process-local hash table using the
-name given in `PREPARE` as the key.  Each of the subsequent `EXECUTE` statements
-sent to the same backend process will look up the query's parse tree using the name
-given and execute its plan (either one created from scratch or a cached one, more on
-this in a bit) to produce the query's result rows.
+Using prepared statements, a client can issue a query in two stages.  First, *prepare*
+it using the statement `PREPARE a_name AS <query>` when the connected Postgres backend
+process will parse-analyze the query and remember the parse tree in a hash table using
+the provided name as its lookup key, followed by multiple *executions* using the statement
+`EXECUTE a_name`, each of which will compute and return the query's output rows.  During
+each execution, the backend process looks up the parse tree in the hash table and makes
+a plan based on it to compute the result.
+ 
+The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not
+redoing the parse-analysis processing on every execution, which is fine because the result
+of that processing would be the exact same parse tree unless some object mentioned in the
+query was changed by DDL, something that tends to happen rather unfrequently.  Even more
+CPU cycles are saved if the `EXECUTE` step is able to use a plan that is also cached,
+instead of building it from scratch for that particular execution.
 
-The point of this exercise is that it can save CPU cycles by not redoing the
-parse/analyze/rewrite processing on every request, which is fine because the result
-of that processing would be the exact same internal parse tree unless some object
-mentioned in the query was changed by DDL, something that tends to happen rather
-unfrequently.  Even more CPU cycles are saved if the `EXECUTE` step is able to use
-a plan that is also cached, instead of building it from scratch for that particular
-execution.
-
-It is easy to check the performance benefit of performoing the queries this way using
-the handy `pgbench` tool. pgbench allows to specify which protocol to use when running
+It is easy to check the performance benefit of this 2-stage protocol of performing queries
+using the handy `pgbench` tool. It allows specifying which protocol to use when running
 the individual queries in the benchmark using the parameter `--protocol=querymode`.
 The value *simple* instructs it to execute the queries in one go and *prepared* to
-use the 2-stage method described above.
+use the 2-stage method.
 
 ```
 $ pgbench -i > /dev/null 2>&1
@@ -70,6 +65,9 @@ tps = 32234.211200 (without initial connection time)
 So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?`
 is 0.031 milliseconds when performed using the parameterized query protocol versus 0.058
 when using the simple protocol.
+
+It's interesting to consider how the plan itself is cached, because that is where the
+problems with partitioned tables lie.
 
 The decision of whether or not to use a cached plan is made by the plancache module
 present in the backend that is involved in the processing of the `EXECUTE` statement.
