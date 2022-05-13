@@ -73,11 +73,10 @@ using the simple protocol.
 It's interesting to consider how the plan itself may be cached, because that is where the
 problems with partitioned tables that I want to talk about can be traced to.  The backend
 code relies on the plancache module which hosts the plan caching logic.  When presented
-with the parse tree of a query and the set of parameter values provided in `EXECUTE`, its
-job is to figure out if a plan matching the query already exists and if one does, check if
-it's still valid by acquiring read locks all the relations that it scans.  If any of the
-relations has changed since the plan was created, this validation steps detects those
-changes and triggers replanning.
+with the parse tree of a query, its job is to figure out if a plan matching the query
+already exists and if one does, check if it's still valid by acquiring read locks all the
+relations that it scans.  If any of the relations has changed since the plan was created,
+this validation step detects those changes and triggers replanning.
 
 An important bit about such a cached plan is that plancache does not pass the parameter
 values that the `EXECUTE` would have provided to the planner, so it is a *generic*
