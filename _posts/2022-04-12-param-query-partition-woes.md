@@ -21,7 +21,7 @@ The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in pl
 the actual constant values in the query's conditions (like `WHERE`).  The values themselves
 are only supplied during a given `EXECUTE` invocation.  During each execution, the backend
 process will look up the parse tree in the hash table and make a plan based on it to compute
-the result of the query for given set of values of the paramters.
+the result of the query for given set of parameter values.
  
 The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not
 redoing the parse-analysis processing on every execution, which is fine because the result
