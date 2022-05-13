@@ -12,7 +12,7 @@ Prepared statements (aka parameterized queries) suffer when you have partitioned
 tables mentioned in them.  Let's see why.
 
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
-it using `PREPARE a_name AS <query>` when the connected Postgres backend process will
+it using `PREPARE a_name AS <query>` when the connected Postgres backend process will only
 parse-analyze the query and remember the parse tree in a (process-local) hash table using
 the provided name as its lookup key, followed by multiple *executions* using the statement
 `EXECUTE a_name`, each of which will compute and return the query's output rows.
