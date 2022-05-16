@@ -96,22 +96,22 @@ be a big problem if the query contains partitioned tables. Without plan-time par
 which relies on constant values being available for the planner to compare them against partition
 bounds found in the system catalog, the generic plan must include *all* partitions.
 
-Fortunately, pruning will occur during execution (*run-time pruning*), though there are a number
-of steps manipulating the plan that must occur before the run-time pruning can occur, each of which
+Now, while pruning *will* occur during execution (*run-time pruning*), there are a number of steps
+that manipulate the generic plan that must occur before the run-time pruning occurs, each of which
 currently takes O(n) time, where n is the number of partitions present in the generic plan.  One of
-those steps, the most expensive one, is the plancache module's validation of the plan which must lock
-all relations mentioned in the plan.  The more partitions there are, the longer it will take this
-validation step to finish.  The following graph shows the average latency reported by
+those steps, the one that consumes the most time, is the plancache module's validation of the plan
+which must lock all relations mentioned in the plan.  The more partitions there are, the longer it
+will take the validation step to finish.  The following graph shows the average latency reported by
 `pgbench -S --protocol=prepared` with varying number of partitions (initialized with
-`pgbench -i --partitions=N` in each case):
+`pgbench -i --partitions=N` in each case), which shows how bad things will get as the number of
+partitions increases:
 
 ![v15 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
 
-The following graph plots the latencies one may see by forcing the plancache module to create a
-parameter value dependent (*custom*) plan on every `EXECUTE` (by setting `plan_cache_mode =
-force_custom_plan` in postgresql.conf).  Note that the latency doesn't degrade as it does by the
-use of a parameter value independent cached (*generic*) plan, because the planner is able to prune
-the unnecessary partitions in that case.
+The following graph also plots the latencies one may see by forcing the plancache module to
+create a parameter value dependent (*custom*) plan on every `EXECUTE` (by setting `plan_cache_mode =
+force_custom_plan` in postgresql.conf), whereby the planner is able to prune the unnecessary
+partitions:
 
 ![v15 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
 
@@ -119,7 +119,7 @@ However, forcing re-planning on each `EXECUTE` means leaving the peformance bene
 on the table.  So I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix the
 generic plan validation step such that it only locks the partitions that match the parameter values
 mentioned in `EXECUTE` by performing the run-time pruning earlier than the validation step.  Here is
-the graph with the patch applied:
+the graph showing the improved generic plan execution latency after applying the patch:
 
 ![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
 
