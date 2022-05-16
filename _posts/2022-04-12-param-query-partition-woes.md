@@ -105,15 +105,20 @@ with `pgbench -i --partitions=N` in each case):
 
 ![v15 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
 
-Compare that to always forcing the plancache to create a parameter value depedent (*custom*)
-plan, in which case, the latency doesn't degrade as it does by the use of of a parameter
-value indepentent cached (*generic*) plan:
+Compare that to the latency one sees by forcing the plancache to create a parameter value
+dependent (*custom*) plan on every `EXECUTE` (by setting `plan_cache_mode = force_custom_plan`),
+where the latency doesn't degrade as it does by the use of a parameter value independent
+cached (*generic*) plan, because the planner is able to prune the unnecessary partitions in that
+case:
 
 ![v15 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
 
-I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, which it does
-by making the plancache not lock the partitions that need not be locked.  The latency graph
-with the patch applied:
-
+That leaves us with the question of what we are going to do about it.  Actually, I have proposed
+a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, which it does by making the
+plancache prune the unnecssary partitions from the generic plan and thus not lock them when
+validating the plan.  The latency graph with the patch applied:
 
 ![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
+
+You may see that the latency is lower than with the use of a custom plan, which is to be expected
+because it doesn't include the time to create it for each `EXECUTE`.
