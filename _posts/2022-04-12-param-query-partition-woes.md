@@ -82,9 +82,9 @@ those changes and triggers replanning.
 
 An important bit about such a cached plan is that, when creating it, the plancache would not
 have passed the parameter values mentioned in `EXECUTE` to the planner, so it is a *generic*
-(parameter-value-indepedent) plan.  The plan is in most cases same as the one plancache would
-get by passing the parameter values, because the planner is smart enough, for example, to
-determine that an index on `colname` can be used to optimize both `colname = <constant-value>`
+(parameter-value-indepedent) plan.  The plan is in most cases is same as the one plancache
+would have gotten by passing the parameter values, because the planner is smart enough, for
+example, to determine that an index on `colname` can be used to optimize both `colname = <constant-value>`
 and `colname = $1` and perform other optimizations in the absence of the actual constant
 values to compare against the table/index statistics.
 
