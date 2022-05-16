@@ -12,16 +12,17 @@ Prepared statements (aka parameterized queries) suffer when you have partitioned
 tables mentioned in them.  Let's see why.
 
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
-it using `PREPARE a_name AS <query>` when the connected Postgres backend process will only
-parse-analyze the query and remember the parse tree in a (process-local) hash table using
-the provided name as its lookup key, followed by *execution* of the query using the
-statement `EXECUTE a_name`, each of which will compute and return the query's output rows.
+it using `PREPARE a_name AS <query>` in response to which the connected Postgres backend
+process will only parse-analyze the query and remember the parse tree in a (process-local)
+cache using the provided name as its lookup key.  The second stage, which the client would
+typically want to run multiple times is the *execution* of that *prepared* query using the
+statement `EXECUTE a_name`, in response to which the backend will look up the parse tree
+with given name (one the backend saved during 'PREPARE`), create or look up a plan for it,
+and return the query's output rows by executing that plan.
 
 The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of
 the actual constant values in the query's conditions (like `WHERE`).  The values themselves
-are only supplied during a given `EXECUTE` invocation.  During each execution, the backend
-process will look up the parse tree in the hash table and make a plan based on it to compute
-the result of the query for given set of parameter values.
+are only supplied during a given `EXECUTE` invocation. 
  
 The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not
 redoing the parse-analysis processing on every execution, which is fine because the result
@@ -29,12 +30,13 @@ of that processing would be the exact same parse tree unless some object mention
 query was changed by DDL, something that tends to happen rather unfrequently.
 
 Even more CPU cycles are saved if the `EXECUTE` step is able to use a plan that is also
-cached, instead of building it from scratch for that particular execution.
+cached, instead of building it from scratch for a given execution.
 
-It is easy to check the performance benefit of this 2-stage protocol of performing queries
-using the handy `pgbench` tool, which allows specifying which protocol to use when running
-the benchmark queries using the parameter `--protocol=querymode`. The value *simple*
-instructs it to execute the queries in one go and *prepared* to use the 2-stage method.
+The performance benefit of this 2-stage protocol of performing queries can be easily
+verified using the handy `pgbench` tool, which allows specifying which protocol to use
+when running the benchmark queries using the parameter `--protocol=querymode`. The value
+*simple* instructs it to execute the queries in one go (parse-plan-execute) and *prepared*
+to use the 2-stage method described above.
 
 ```
 $ pgbench -i > /dev/null 2>&1
@@ -71,25 +73,26 @@ is 0.031 milliseconds when performed using the 2-stage protocol versus 0.058 whe
 using the simple protocol.
 
 It's interesting to consider how the plan itself may be cached, because that is where the
-problems with partitioned tables that I want to talk about can be traced to.  The backend
-code relies on the plancache module which hosts the plan caching logic.  When presented
-with the parse tree of a query, its job is to figure out if a plan matching the query
-already exists and if one does, check if it's still valid by acquiring read locks all the
-relations that it scans.  If any of the relations has changed since the plan was created,
-this validation step detects those changes and triggers replanning.
+problems with partitioned tables can be traced to.  The backend code relies on the plancache
+module which hosts the plan caching logic.  When presented with the parse tree of a query,
+its job is to figure out if a plan matching the query already exists and if one does, check
+if it's still valid by acquiring read locks all the relations that it scans.  If any of the
+relations has changed since the plan was created, this validation step (the locking) detects
+those changes and triggers replanning.
 
-An important bit about such a cached plan is that plancache does not pass the parameter
-values that the `EXECUTE` would have provided to the planner, so it is a *generic*
-(parameter-value-indepedent) plan.  The plan is in most cases same as the one plancache
-would get by passing the parameter values, because the planner is smart enough, for
-example, to determine that an index on `colname` can be used to optimize both
-`colname = <constant-value>` and `colname = $1`.
+An important bit about such a cached plan is that, when creating it, the plancache would not
+have passed the parameter values mentioned in `EXECUTE` to the planner, so it is a *generic*
+(parameter-value-indepedent) plan.  The plan is in most cases same as the one plancache would
+get by passing the parameter values, because the planner is smart enough, for example, to
+determine that an index on `colname` can be used to optimize both `colname = <constant-value>`
+and `colname = $1` and perform other optimizations in the absence of the actual constant
+values to compare against the table/index statistics.
 
 Parameter values not being available to the planner when creating a generic plan can be a
-big problem if the query contains partitioned tables.  Partition pruning can be very helpful
-to create an optimal plan containing only the partitions whose bounds that match the values
-mentioned in the `WHERE` condition.  Without parameter values pruning cannot occur, so the
-generic plan must include *all* partitions.
+big problem if the query contains partitioned tables though.  Partition pruning can be very
+helpful to create an optimal plan containing only the partitions whose bounds that match the
+values mentioned in the `WHERE` condition.  Without parameter values pruning cannot occur, so
+the generic plan must include *all* partitions.
 
 Note that pruning does occur during execution (*run-time pruning*) using the parameter values
 provided be `EXECUTE`, though there are a number of steps that must occur before the pruning
