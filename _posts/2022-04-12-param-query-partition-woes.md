@@ -82,21 +82,25 @@ those changes and triggers replanning.
 
 An important bit about such a cached plan is that, when creating it, the plancache would not
 have passed the parameter values mentioned in `EXECUTE` to the planner, so it is a *generic*
-(parameter-value-indepedent) plan.  The plan is in most cases is same as the one plancache
-would have gotten by passing the parameter values, because the planner is smart enough, for
-example, to determine that an index on `colname` can be used to optimize both `colname =
-<actual-constant-value>` and `colname = $1` and perform other optimizations in the absence of
-the actual constant values to compare against the table/index statistics.
+(parameter-value-indepedent) plan.  The plan is in most cases is the same as one plancache
+would have gotten by passing the parameter values, because the planner is smart enough to
+perform some for optimizations even in the absence of the actual constant values to compare
+against the table/index statistics using heuristics, at least for simpler queries  For example,
+it can determine that an index on `colname` can be used to optimize `colname = $1` in a similar
+manner as it can be used for `colname = <actual-constant-value>.
 
-Parameter values not being available to the planner when creating a generic plan can be a
-big problem if the query contains partitioned tables though.  Partition pruning can be very
-helpful to create an optimal plan containing only the partitions whose bounds that match the
-values mentioned in the `WHERE` condition, but it cannot occur without those values being
-available, so the generic plan must include *all* partitions.
+However, parameter values not being available to the planner when creating a generic plan can
+be a big problem if the query contains partitioned tables.  Partition pruning can be very
+crucial for creating an optimal plan in that case, but it cannot occur without those values
+being available, so the generic plan must include *all* partitions.
 
-Note that pruning does occur during execution (*run-time pruning*) using the parameter values
-provided be `EXECUTE`, though there are a number of steps that must occur before the pruning
-occurs, each of which take O(n) time, where n is the number of partitions present in the
-generic plan.  One of those steps, the most expensive one, is the plancache's validation of
-the plan which must lock all relations mentioned in the plan.  The more partitions there are,
-the longer it will take this validation step to finish.
+Now pruning will occur during execution (*run-time pruning*) using the parameter values
+provided in `EXECUTE`, though there are a number of steps that must occur before it occurs,
+each of which take O(n) time, where n is the number of partitions present in the generic plan.
+One of those steps, the most expensive one, is the plancache's validation of the plan which
+must lock all relations mentioned in the plan.  The more partitions there are, the longer it
+will take this validation step to finish.  The following graph shows the average latency
+reported by `pgbench -S --protocol=prepared` with varying number of partitions (initialized
+with `pgbench -i --partitions=N` in each case):
+
+![v14 prepared generic plan latency for partitioned tables](s3://amitlan.com/files/param-partition-woes-img1.png)
