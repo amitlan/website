@@ -93,7 +93,7 @@ on `colname` can be used to optimize `colname = $1` in a similar manner as it ca
 
 However, parameter values not being available to the planner when creating a generic plan can
 be a big problem if the query contains partitioned tables. Without plan-time partition pruning,
-which relies on constant values being available for the planner to compare them against partition
+which relies on constant values being available for the planner to compare against the partition
 bounds found in the system catalog, the generic plan must include *all* partitions.
 
 Now, while pruning *will* occur during execution (*run-time pruning*), there are a number of steps
