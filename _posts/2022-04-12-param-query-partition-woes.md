@@ -97,7 +97,7 @@ which relies on constant values being available for the planner to compare again
 bounds found in the system catalog, the generic plan must include *all* partitions.
 
 Now, while pruning *will* occur during execution (*run-time pruning*), there are a number of steps
-that manipulate the generic plan that must occur before the run-time pruning occurs, each of which
+that manipulate the generic plan that must take place before the pruning can occur, each of which
 currently takes O(n) time, where n is the number of partitions present in the generic plan.  One of
 those steps, the one that consumes the most time, is the plancache module's validation of the plan
 which must lock all relations mentioned in the plan.  The more partitions there are, the longer it
