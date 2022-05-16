@@ -76,7 +76,7 @@ It's interesting to consider how the plan itself may be cached, because that is 
 problems with partitioned tables can be traced to.  The backend code relies on the plancache
 module which hosts the plan caching logic.  When presented with the parse tree of a query,
 its job is to figure out if a plan matching the query already exists and if one does, check
-if it's still valid by acquiring read locks all the relations that it scans.  If any of the
+if it's still valid by acquiring read locks on all the relations that it scans.  If any of the
 relations has changed since the plan was created, this validation step (the locking) detects
 those changes and triggers replanning.
 
