@@ -84,9 +84,9 @@ An important bit about such a cached plan is that, when creating it, the plancac
 have passed the parameter values mentioned in `EXECUTE` to the planner, so it is a *generic*
 (parameter-value-indepedent) plan.  The plan is in most cases is same as the one plancache
 would have gotten by passing the parameter values, because the planner is smart enough, for
-example, to determine that an index on `colname` can be used to optimize both `colname = <constant-value>`
-and `colname = $1` and perform other optimizations in the absence of the actual constant
-values to compare against the table/index statistics.
+example, to determine that an index on `colname` can be used to optimize both `colname =
+<actual-constant-value>` and `colname = $1` and perform other optimizations in the absence of
+the actual constant values to compare against the table/index statistics.
 
 Parameter values not being available to the planner when creating a generic plan can be a
 big problem if the query contains partitioned tables though.  Partition pruning can be very
