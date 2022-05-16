@@ -2,11 +2,11 @@
 layout: writing
 title: "Postgres: woes of prepared statements with partitioning"
 tags: [writing, pg]
-last_updated: 2022-05-11
+last_updated: 2022-05-16
 ---
 # Postgres: woes of prepared statements with partitioning
 
-May 11, 2022
+May 16, 2022
 
 Prepared statements (aka parameterized queries) suffer when you have partitioned
 tables mentioned in them.  Let's see why.
