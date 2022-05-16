@@ -70,8 +70,9 @@ initial connection time = 9.686 ms
 tps = 32234.211200 (without initial connection time)
 ```
 
-So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?` is 0.031
-milliseconds when performed using the 2-stage protocol versus 0.058 when using the simple protocol.
+The latency average for query `SELECT abalance FROM pgbench_accounts WHERE aid = ?` is 0.031
+milliseconds when performed using the 2-stage protocol versus 0.058 when using the simple protocol,
+so the caching does seem productive.
 
 It's interesting to look at the mechanism of how the plan itself is cached, because that is where
 the problems with partitioned tables can be traced to.  The backend code relies on the plancache
