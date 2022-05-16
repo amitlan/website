@@ -104,3 +104,9 @@ reported by `pgbench -S --protocol=prepared` with varying number of partitions (
 with `pgbench -i --partitions=N` in each case):
 
 ![v14 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
+
+Compare that to always forcing the plancache to create a parameter value depedent (*custom*)
+plan, in which case, the latency doesn't degrade as it does by the use of of a parameter
+value indepentent cached plan:
+
+![v14 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
