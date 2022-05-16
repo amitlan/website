@@ -103,7 +103,7 @@ those steps, the one that consumes the most time, is the plancache module's vali
 which must lock all relations mentioned in the plan.  The more partitions there are, the longer it
 will take the validation step to finish.  The following graph shows the average latency reported by
 `pgbench -S --protocol=prepared` with varying number of partitions (initialized with
-`pgbench -i --partitions=N` in each case), which shows how bad things will get as the number of
+`pgbench -i --partitions=N` in each case), which shows the latency increases as the number of
 partitions increases:
 
 ![v15 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
