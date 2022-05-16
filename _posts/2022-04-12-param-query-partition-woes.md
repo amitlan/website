@@ -89,7 +89,7 @@ would have gotten by passing the values, because the planner is smart enough to 
 optimizations even in the absence of the actual constant values to compare against the table/index
 statistics, at least for simpler queries.  For example, it can heuristically determine that an index
 on `colname` can be used to optimize `colname = $1` in a similar manner as it can be used for
-`colname = <actual-constant-value>.
+`colname = <actual-constant-value>`.
 
 However, parameter values not being available to the planner when creating a generic plan can
 be a big problem if the query contains partitioned tables. Without plan-time partition pruning,
