@@ -124,4 +124,4 @@ the graph showing the improved generic plan execution latency after applying the
 ![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
 
 As expected, the latency no longer degrades, and perhaps more importantly, is indeed lower than with
-the use of a custom plan on each `EXECUTE`.
+forced re-planning on each `EXECUTE`.
