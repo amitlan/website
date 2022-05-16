@@ -1,10 +1,10 @@
 ---
 layout: writing
-title: "Postgres: woes of prepared statements with partitioning"
+title: "Postgres: on performance of prepared statements with partitioning"
 tags: [writing, pg]
 last_updated: 2022-05-16
 ---
-# Postgres: woes of prepared statements with partitioning
+# Postgres: on performance of prepared statements with partitioning
 
 May 16, 2022
 
