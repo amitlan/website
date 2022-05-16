@@ -103,4 +103,4 @@ will take this validation step to finish.  The following graph shows the average
 reported by `pgbench -S --protocol=prepared` with varying number of partitions (initialized
 with `pgbench -i --partitions=N` in each case):
 
-![v14 prepared generic plan latency for partitioned tables](s3://amitlan.com/files/param-partition-woes-img1.png)
+![v14 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
