@@ -111,8 +111,9 @@ value indepentent cached (*generic*) plan:
 
 ![v15 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
 
-I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, mainly by not
-locking the partitions that need not be locked.  The latency graph with the patch applied:
+I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, which it does
+by making the plancache not lock the partitions that need not be locked.  The latency graph
+with the patch applied:
 
 
 ![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
