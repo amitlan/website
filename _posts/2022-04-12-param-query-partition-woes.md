@@ -103,10 +103,16 @@ will take this validation step to finish.  The following graph shows the average
 reported by `pgbench -S --protocol=prepared` with varying number of partitions (initialized
 with `pgbench -i --partitions=N` in each case):
 
-![v14 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
+![v15 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
 
 Compare that to always forcing the plancache to create a parameter value depedent (*custom*)
 plan, in which case, the latency doesn't degrade as it does by the use of of a parameter
-value indepentent cached plan:
+value indepentent cached (*generic*) plan:
 
-![v14 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
+![v15 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
+
+I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, mainly by not
+locking the partitions that need not be locked.  The latency graph with the patch applied:
+
+
+![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
