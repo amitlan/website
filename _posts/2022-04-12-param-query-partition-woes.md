@@ -12,25 +12,25 @@ Prepared statements (aka parameterized queries) suffer when you have partitioned
 tables mentioned in them.  Let's see why.
 
 Using prepared statements, a client can issue a query in two stages.  First, *prepare*
-it using `PREPARE a_name AS <query>` in response to which the connected Postgres backend
-process will only parse-analyze the query and remember the parse tree in a (process-local)
-cache using the provided name as its lookup key.  The second stage, which the client would
-typically want to run multiple times is the *execution* of that *prepared* query using the
-statement `EXECUTE a_name`, in response to which the backend will look up the parse tree
-with given name (one the backend saved during 'PREPARE`), create or look up a plan for it,
-and return the query's output rows by executing that plan.
+it using `PREPARE a_name AS <query>`, followed by typically multiple *executions* using
+`EXECUTE a_name` issued to the same backend process as the one that took the `PREPARE`.
+During the `PREPARE` step, the backend will only parse-analyze the query and remember the
+resulting parse tree in a (process-local) cache using the provided name as its lookup key.
+During each `EXECUTE` step, the backend will look that parse tree up, create or look up a
+plan for it, and execute it to return the query's output rows.
 
-The query specified in `PREPARE` can put numbered parameters ($1, $2, ...) in place of
+The query specified in `PREPARE` may put numbered parameters ($1, $2, ...) in place of
 the actual constant values in the query's conditions (like `WHERE`).  The values themselves
 are only supplied during a given `EXECUTE` invocation. 
  
-The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not
-redoing the parse-analysis processing on every execution, which is fine because the result
-of that processing would be the exact same parse tree unless some object mentioned in the
-query was changed by DDL, something that tends to happen rather unfrequently.
+The benefit of this 2-stage processing is that a lot of CPU cycles are saved by not redoing
+the parse-analysis processing on every execution, which is fine because the result of that
+processing would be the exact same parse tree, unless objects mentioned in the query were
+changed by DDL, something that tends to happen rather unfrequently.
 
 Even more CPU cycles are saved if the `EXECUTE` step is able to use a plan that is also
-cached, instead of building it from scratch for a given execution.
+cached, instead of building it from scratch for a given execution, that is, for a fresh set
+of values for the parameters.
 
 The performance benefit of this 2-stage protocol of performing queries can be easily
 verified using the handy `pgbench` tool, which allows specifying which protocol to use
@@ -72,7 +72,7 @@ So the latency average for query `SELECT abalance FROM pgbench_accounts WHERE ai
 is 0.031 milliseconds when performed using the 2-stage protocol versus 0.058 when
 using the simple protocol.
 
-It's interesting to consider how the plan itself may be cached, because that is where the
+It's interesting to look at the mechanism of how plan itself is cached, because that is where the
 problems with partitioned tables can be traced to.  The backend code relies on the plancache
 module which hosts the plan caching logic.  When presented with the parse tree of a query,
 its job is to figure out if a plan matching the query already exists and if one does, check
@@ -80,45 +80,45 @@ if it's still valid by acquiring read locks on all the relations that it scans. 
 relations has changed since the plan was created, this validation step (the locking) detects
 those changes and triggers replanning.
 
-An important bit about such a cached plan is that, when creating it, the plancache would not
-have passed the parameter values mentioned in `EXECUTE` to the planner, so it is a *generic*
-(parameter-value-indepedent) plan.  The plan is in most cases is the same as one plancache
-would have gotten by passing the parameter values, because the planner is smart enough to
-perform some for optimizations even in the absence of the actual constant values to compare
-against the table/index statistics using heuristics, at least for simpler queries  For example,
-it can determine that an index on `colname` can be used to optimize `colname = $1` in a similar
-manner as it can be used for `colname = <actual-constant-value>.
+An important bit about such a cached plan is that, when creating it, the plancache module would not
+have passed the actual values of parameters mentioned in `EXECUTE` to the planner, so it is a
+*generic* (parameter-value-indepedent) plan.  The plan is in most cases the same as one that the
+plancache module would have gotten by passing the values, because the planner is smart enough to
+perform some of its optimizations even in the absence of the actual constant values to compare
+against the table/index statistics, at least for simpler queries.  For example, it can
+heuristically determine that an index on `colname` can be used to optimize `colname = $1` in
+a similar manner as it can be used for `colname = <actual-constant-value>.
 
 However, parameter values not being available to the planner when creating a generic plan can
-be a big problem if the query contains partitioned tables.  Partition pruning can be very
-crucial for creating an optimal plan in that case, but it cannot occur without those values
-being available, so the generic plan must include *all* partitions.
+be a big problem if the query contains partitioned tables. Without plan-time partition pruning,
+which relies on constant values being available for the planner to compare them against partition
+bounds found in the system catalog, the generic plan must include *all* partitions.
 
-Now pruning will occur during execution (*run-time pruning*) using the parameter values
-provided in `EXECUTE`, though there are a number of steps that must occur before it occurs,
-each of which take O(n) time, where n is the number of partitions present in the generic plan.
-One of those steps, the most expensive one, is the plancache's validation of the plan which
-must lock all relations mentioned in the plan.  The more partitions there are, the longer it
-will take this validation step to finish.  The following graph shows the average latency
-reported by `pgbench -S --protocol=prepared` with varying number of partitions (initialized
-with `pgbench -i --partitions=N` in each case):
+Fortunately, pruning will occur during execution (*run-time pruning*), though there are a number
+of steps manipulating the plan that must occur before the pruning can occur, each of which currently
+takes O(n) time, where n is the number of partitions present in the generic plan.  One of those steps,
+the most expensive one, is the plancache module's validation of the plan which must lock all relations
+mentioned in the plan.  The more partitions there are, the longer it will take this validation step to
+finish.  The following graph shows the average latency reported by `pgbench -S --protocol=prepared`
+with varying number of partitions (initialized with `pgbench -i --partitions=N` in each case):
 
 ![v15 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img1.png)
 
-Compare that to the latency one sees by forcing the plancache to create a parameter value
-dependent (*custom*) plan on every `EXECUTE` (by setting `plan_cache_mode = force_custom_plan`),
-where the latency doesn't degrade as it does by the use of a parameter value independent
-cached (*generic*) plan, because the planner is able to prune the unnecessary partitions in that
-case:
+The following graph plots the latencies one may see by forcing the plancache module to create a
+parameter value dependent (*custom*) plan on every `EXECUTE` (by setting `plan_cache_mode =
+force_custom_plan` in postgresql.conf).  Note that the latency doesn't degrade as it does by the
+use of a parameter value independent cached (*generic*) plan, because the planner is able to prune
+the unnecessary partitions in that case.
 
 ![v15 prepared custom plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img2.png)
 
-That leaves us with the question of what we are going to do about it.  Actually, I have proposed
-a [patch](https://commitfest.postgresql.org/38/3478/) to fix that, which it does by making the
-plancache prune the unnecssary partitions from the generic plan and thus not lock them when
-validating the plan.  The latency graph with the patch applied:
+However, forcing replanning on each `EXECUTE` means leaving the peformance benefit of plan caching
+on the table.  So I proposed a [patch](https://commitfest.postgresql.org/38/3478/) to fix the
+generic plan validation step such that it only locks the partitions that match the parameter values
+mentioned in `EXECUTE` by performing the run-time pruning earlier than it is done currently.  Here is
+the graph with the patch applied:
 
 ![v16 prepared generic plan latency for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
 
-You may see that the latency is lower than with the use of a custom plan, which is to be expected
-because it doesn't include the time to create it for each `EXECUTE`.
+As expected, the latency no longer degrades, and perhaps more importantly, is indeed lower than with
+the use of a custom plan on each `EXECUTE`.
