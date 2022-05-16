@@ -91,8 +91,8 @@ the actual constant values to compare against the table/index statistics.
 Parameter values not being available to the planner when creating a generic plan can be a
 big problem if the query contains partitioned tables though.  Partition pruning can be very
 helpful to create an optimal plan containing only the partitions whose bounds that match the
-values mentioned in the `WHERE` condition.  Without parameter values pruning cannot occur, so
-the generic plan must include *all* partitions.
+values mentioned in the `WHERE` condition, but it cannot occur without those values being
+available, so the generic plan must include *all* partitions.
 
 Note that pruning does occur during execution (*run-time pruning*) using the parameter values
 provided be `EXECUTE`, though there are a number of steps that must occur before the pruning
