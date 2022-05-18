@@ -9,7 +9,7 @@ title: Amit Langote
   on its database server product team where my main focus is contributions
   to open source PostgreSQL. Before joining EDB, I worked at
   <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
-  as a senior software engineer with the basically same focus.
+  as a senior software engineer with basically the same focus.
 </p>
 
 <p>
