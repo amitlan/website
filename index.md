@@ -6,9 +6,10 @@ title: Amit Langote
 <p>
 <img src="files/me2.jpeg" alt="Hey there!" align="right"/>
   I'm a principal engineer at <a href="https://www.enterprisedb.com/">EDB</a>
-  on its database server product team (work focused on open source PostgreSQL).
-  Before joining EDB, I worked at <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
-  as a senior software engineer working mostly on PostgreSQL open source development.
+  on its database server product team where my main focus is contributions
+  to open source PostgreSQL. Before joining EDB, I worked at
+  <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
+  as a senior software engineer with the basically same focus.
 </p>
 
 <p>
