@@ -6,14 +6,14 @@ title: Amit Langote
 <p>
 <img src="files/me2.jpeg" alt="Hey there!" align="right"/>
   I'm a principal engineer at <a href="https://www.enterprisedb.com/">EDB</a>
-  on its database server product team (work focused on open source PostgreSQL) and
-  previously spent some 7 years working at <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
+  on its database server product team (work focused on open source PostgreSQL).
+  Before that, I worked at <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
   as a senior software engineer working mostly on PostgreSQL open source development.
 </p>
 
 <p>
   I was born and got my education in the western state of Maharashtra of India.
-  My first job out of college brought me to Tokyo, Japan, where I live with wife
+  My first job out of college brought me to Tokyo in 2013, where I live with wife
   and daughter.
 </p>
 
