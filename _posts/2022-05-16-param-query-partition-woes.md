@@ -126,7 +126,7 @@ the graph showing the improved generic plan execution latency after applying the
 As expected, the latency no longer degrades, and perhaps more importantly, is indeed lower than with
 forced re-planning on each `EXECUTE`.
 
-Note: With default setting of `plan_cache_mode` (`auto`), Postgres currently chooses a custom plan
+Note: With default setting of `plan_cache_mode` (`auto`), Postgres currently will choose a custom plan
 for partitions because a generic plan looks expensive given that it must contain all partitions, so
 the performance one gets by default looks more like the custom line in 2nd graph. Along with the patch
 I mentioned above which improves the execution performance of generic plans containing partitions, we
