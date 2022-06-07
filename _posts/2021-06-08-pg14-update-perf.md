@@ -1,10 +1,10 @@
 ---
 layout: writing
-title: "Postgres: UPDATE will work differently in v14"
+title: "Postgres: update statement will work differently in v14"
 tags: [writing, pg]
 last_updated: 2021-06-08
 ---
-# Postgres: UPDATE will work differently in v14
+# Postgres: update statement will work differently in v14
 
 June 8, 2021
 
