@@ -181,3 +181,6 @@ be seen in the following graph:
 
 ![v16 prepared generic plan tps for partitioned tables_with_permissions_patch](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1-patch2.png)
 
+While it is unquestionable that these patches are necessary for seeing these bottlenecks out the door,
+the changes they make to the query execution pipeline are non-trivial and haven't been fully reviewed
+yet.  The work is ongoing and I hope they make the finish line for the next year's v16.
