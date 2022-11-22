@@ -13,8 +13,12 @@ described the performance problems when using prepared statements with partition
 mentioned a [patch](https://www.postgresql.org/message-id/CA%2BHiwqFGkMSge6TgC9KQzde0ohpAycLQuV7ooitEEpbKB0O_mg%40mail.gmail.com)
 that I have proposed to alleviate the performance bottleneck caused by locking to some degree.
 The following graph shows a comparison of the TPS performance of `pgbench -T60 --protocol=prepared`
-with varying number of partitions (I have set `plan_cache_mode = force_generic_plan` in
-postgresql.conf to ensure the benchmark measures the performance with cached generic plans.)
+with varying number of partitions, initialized using `pgbench -i --partitions=$count`.  Note that
+I have set `plan_cache_mode = force_generic_plan` in postgresql.conf to ensure the benchmark
+measures the performance with cached generic plans.
+
+![v16 prepared generic plan tps for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1.png)
+
 
 Without applying the patch, this is what the `perf` profile of a Postgres backend process
 looks like at low partition counts (say, 32):
@@ -124,7 +128,56 @@ Unlike without the patch, the time spent under `GetCachedPlan()` hasn't balloone
 stayed around the same as with 32 partitions.  Comparing the TPS figure is even more helpful -- almost
 10x improvement!
 
+Actually, I lied a bit above where I said that seeing more time being spent in `PortalStart()` is a good
+thing, but actually not quite so, because that time is just initializing the plan tree for execution,
+not actual execution.  Expanding that frame, we can see the culprits:
 
-![v16 prepared generic plan tps for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/param-partition-woes-img3.png)
+```
+-   97.20%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
+     __libc_start_main                                                                                ▒
+     main                                                                                             ▒
+     PostmasterMain                                                                                   ▒
+   - ServerLoop                                                                                       ▒
+      - 95.61% PostgresMain                                                                           ▒
+         - 34.23% PortalStart                                                                         ▒
+            - 33.62% standard_ExecutorStart                                                           ▒
+               + 19.52% ExecInitNode                                                                  ▒
+                 13.23% ExecCheckRTPerms                                                              ▒
+                 0.55% ExecInitRangeTable                                                             ▒
+         + 15.57% finish_xact_command                                                                 ▒
+         + 14.27% PortalRun                                                                           ▒
+         + 9.27% GetCachedPlan                                                                        ▒
+         + 8.53% pq_getbyte                                                                           ▒
+         + 4.47% ReadyForQuery                                                                        ▒
+         + 1.58% start_xact_command                                                                   ▒
+           0.51% OidInputFunctionCall                                                                 ▒
+```
 
+The reason for pointing that out is that I have another [patch](https://www.postgresql.org/message-id/CA%2BHiwqGjJDmUhDSfv-U2qhKJjt9ST7Xh9JXC_irsAQ1TAUsJYg%40mail.gmail.com) whereby the time spent in `ExecCheckRTPerms()`
+is reduced significantly, as can be seen in the following updated profile after applying that patch:
+
+```
+-   96.37%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
+     __libc_start_main                                                                                ▒
+     main                                                                                             ▒
+     PostmasterMain                                                                                   ▒
+   - ServerLoop                                                                                       ▒
+      - 94.58% PostgresMain                                                                           ▒
+         - 24.37% PortalStart                                                                         ▒
+            - 23.64% standard_ExecutorStart                                                           ▒
+               + 22.30% ExecInitNode                                                                  ▒
+               + 0.70% ExecInitRangeTable                                                             ▒
+         + 19.20% finish_xact_command                                                                 ▒
+         + 17.54% PortalRun                                                                           ▒
+         + 9.73% GetCachedPlan                                                                        ▒
+         + 8.90% pq_getbyte                                                                           ▒
+         + 4.86% ReadyForQuery                                                                        ▒
+         + 1.63% start_xact_command                                                                   ▒
+           0.54% OidInputFunctionCall                                                                 ▒
+```
+
+So the time spent in `PortalStart()` goes from 34% down to 24%.  The TPS is slightly improved too as can
+be seen in the following graph:
+
+![v16 prepared generic plan tps for partitioned tables_with_permissions_patch](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1-patch2.png)
 
