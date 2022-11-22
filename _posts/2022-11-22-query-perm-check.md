@@ -24,24 +24,24 @@ Without applying the patch, this is what the `perf` profile of a Postgres backen
 looks like at low partition counts (say, 32):
 
 ```
--   97.99%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 96.13% PostgresMain                                                                           ▒
-         + 39.86% PortalStart                                                                         ▒
-         + 12.67% finish_xact_command                                                                 ▒
-         - 11.09% GetCachedPlan                                                                       ▒
-            + 9.09% LockRelationOid                                                                   ▒
-            + 0.88% RevalidateCachedQuery                                                             ▒
-         + 9.53% pq_getbyte                                                                           ▒
-         + 7.23% PortalRun                                                                            ▒
-         + 5.36% ReadyForQuery                                                                        ▒
-         + 1.85% start_xact_command                                                                   ▒
-         + 0.69% EndCommand                                                                           ▒
-           0.54% OidInputFunctionCall                                                                 ▒
-           0.50% CreatePortal                                                                         ▒
+-   97.99%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 96.13% PostgresMain
+         + 39.86% PortalStart
+         + 12.67% finish_xact_command
+         - 11.09% GetCachedPlan
+            + 9.09% LockRelationOid
+            + 0.88% RevalidateCachedQuery
+         + 9.53% pq_getbyte
+         + 7.23% PortalRun
+         + 5.36% ReadyForQuery
+         + 1.85% start_xact_command
+         + 0.69% EndCommand
+           0.54% OidInputFunctionCall
+           0.50% CreatePortal
 ```
 
 I had mentioned in the previous post that locking that's performed as part of validating a cached plan
@@ -53,20 +53,20 @@ with 2048 partitions:
 
 
 ```
--   99.71%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 99.54% PostgresMain                                                                           ▒
-         - 50.57% GetCachedPlan                                                                       ▒
-            + 46.76% LockRelationOid                                                                  ▒
-              1.07% IsSharedRelation                                                                  ▒
-         + 40.37% finish_xact_command                                                                 ▒
-         + 4.56% PortalStart                                                                          ▒
-         + 1.60% PortalRun                                                                            ▒
-         + 0.72% pq_getbyte                                                                           ▒
-         + 0.65% ReadyForQuery                                                                        ▒
+-   99.71%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 99.54% PostgresMain
+         - 50.57% GetCachedPlan
+            + 46.76% LockRelationOid
+              1.07% IsSharedRelation
+         + 40.37% finish_xact_command
+         + 4.56% PortalStart
+         + 1.60% PortalRun
+         + 0.72% pq_getbyte
+         + 0.65% ReadyForQuery
 ```
 
 Almost half of the query execution is time spent locking the partitions, all 2048 of them in this case.
@@ -78,24 +78,24 @@ those that can be pruned.
 Here's the profile with 32 partitions, With the patch applied:
 
 ```
--   98.04%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 96.01% PostgresMain                                                                           ▒
-         + 36.86% PortalStart                                                                         ▒
-         + 11.11% pq_getbyte                                                                          ▒
-         - 10.40% GetCachedPlan                                                                       ▒
-            + 7.90% ExecutorDoInitialPruning                                                          ▒
-            + 1.34% RevalidateCachedQuery                                                             ▒
-         + 9.10% ReadyForQuery                                                                        ▒
-         + 8.51% PortalRun                                                                            ▒
-         + 8.31% finish_xact_command                                                                  ▒
-         + 1.75% start_xact_command                                                                   ▒
-         + 0.85% EndCommand                                                                           ▒
-           0.66% OidInputFunctionCall                                                                 ▒
-           0.51% CreatePortal                                                                         ▒
+-   98.04%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 96.01% PostgresMain
+         + 36.86% PortalStart
+         + 11.11% pq_getbyte
+         - 10.40% GetCachedPlan
+            + 7.90% ExecutorDoInitialPruning
+            + 1.34% RevalidateCachedQuery
+         + 9.10% ReadyForQuery
+         + 8.51% PortalRun
+         + 8.31% finish_xact_command
+         + 1.75% start_xact_command
+         + 0.85% EndCommand
+           0.66% OidInputFunctionCall
+           0.51% CreatePortal
 ```
 
 Hmm, the profile itself doesn't quite tell that the process is now able to spend relatively more time
@@ -107,21 +107,21 @@ But now look at the profile for 2048 partitions:
 
 
 ```
--   96.97%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 95.52% PostgresMain                                                                           ▒
-         + 33.99% PortalStart                                                                         ▒
-         + 15.54% finish_xact_command                                                                 ▒
-         + 14.18% PortalRun                                                                           ▒
-         - 8.84% GetCachedPlan                                                                        ▒
-            + 6.82% ExecutorDoInitialPruning                                                          ▒
-            + 0.96% RevalidateCachedQuery                                                             ▒
-         + 8.68% pq_getbyte                                                                           ▒
-         + 5.05% ReadyForQuery                                                                        ▒
-         + 1.48% start_xact_command                                                                   ▒
+-   96.97%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 95.52% PostgresMain
+         + 33.99% PortalStart
+         + 15.54% finish_xact_command
+         + 14.18% PortalRun
+         - 8.84% GetCachedPlan
+            + 6.82% ExecutorDoInitialPruning
+            + 0.96% RevalidateCachedQuery
+         + 8.68% pq_getbyte
+         + 5.05% ReadyForQuery
+         + 1.48% start_xact_command
 ```
 
 Unlike without the patch, the time spent under `GetCachedPlan()` hasn't ballooned to over 50%, but has
@@ -133,47 +133,47 @@ thing, but actually not quite so, because that time is just initializing the pla
 not actual execution.  Expanding that frame, we can see the culprits:
 
 ```
--   97.20%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 95.61% PostgresMain                                                                           ▒
-         - 34.23% PortalStart                                                                         ▒
-            - 33.62% standard_ExecutorStart                                                           ▒
-               + 19.52% ExecInitNode                                                                  ▒
-                 13.23% ExecCheckRTPerms                                                              ▒
-                 0.55% ExecInitRangeTable                                                             ▒
-         + 15.57% finish_xact_command                                                                 ▒
-         + 14.27% PortalRun                                                                           ▒
-         + 9.27% GetCachedPlan                                                                        ▒
-         + 8.53% pq_getbyte                                                                           ▒
-         + 4.47% ReadyForQuery                                                                        ▒
-         + 1.58% start_xact_command                                                                   ▒
-           0.51% OidInputFunctionCall                                                                 ▒
+-   97.20%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 95.61% PostgresMain
+         - 34.23% PortalStart
+            - 33.62% standard_ExecutorStart
+               + 19.52% ExecInitNode
+                 13.23% ExecCheckRTPerms
+                 0.55% ExecInitRangeTable
+         + 15.57% finish_xact_command
+         + 14.27% PortalRun
+         + 9.27% GetCachedPlan
+         + 8.53% pq_getbyte
+         + 4.47% ReadyForQuery
+         + 1.58% start_xact_command
+           0.51% OidInputFunctionCall
 ```
 
 The reason for pointing that out is that I have another [patch](https://www.postgresql.org/message-id/CA%2BHiwqGjJDmUhDSfv-U2qhKJjt9ST7Xh9JXC_irsAQ1TAUsJYg%40mail.gmail.com) whereby the time spent in `ExecCheckRTPerms()`
 is reduced significantly, as can be seen in the following updated profile after applying that patch:
 
 ```
--   96.37%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main                             ◆
-     __libc_start_main                                                                                ▒
-     main                                                                                             ▒
-     PostmasterMain                                                                                   ▒
-   - ServerLoop                                                                                       ▒
-      - 94.58% PostgresMain                                                                           ▒
-         - 24.37% PortalStart                                                                         ▒
-            - 23.64% standard_ExecutorStart                                                           ▒
-               + 22.30% ExecInitNode                                                                  ▒
-               + 0.70% ExecInitRangeTable                                                             ▒
-         + 19.20% finish_xact_command                                                                 ▒
-         + 17.54% PortalRun                                                                           ▒
-         + 9.73% GetCachedPlan                                                                        ▒
-         + 8.90% pq_getbyte                                                                           ▒
-         + 4.86% ReadyForQuery                                                                        ▒
-         + 1.63% start_xact_command                                                                   ▒
-           0.54% OidInputFunctionCall                                                                 ▒
+-   96.37%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
+     __libc_start_main
+     main
+     PostmasterMain
+   - ServerLoop
+      - 94.58% PostgresMain
+         - 24.37% PortalStart
+            - 23.64% standard_ExecutorStart
+               + 22.30% ExecInitNode
+               + 0.70% ExecInitRangeTable
+         + 19.20% finish_xact_command
+         + 17.54% PortalRun
+         + 9.73% GetCachedPlan
+         + 8.90% pq_getbyte
+         + 4.86% ReadyForQuery
+         + 1.63% start_xact_command
+           0.54% OidInputFunctionCall
 ```
 
 So the time spent in `PortalStart()` goes from 34% down to 24%.  The TPS is slightly improved too as can
@@ -184,3 +184,6 @@ be seen in the following graph:
 While it is unquestionable that these patches are necessary for seeing these bottlenecks out the door,
 the changes they make to the query execution pipeline are non-trivial and haven't been fully reviewed
 yet.  The work is ongoing and I hope they make the finish line for the next year's v16.
+
+Addendum: The `finish_xact_command()` also spends more time than it really should in this particular
+benchmark (generic plan, with many partitions).  There's [work underway](https://www.postgresql.org/message-id/0A3221C70F24FB45833433255569204D1FB976EF%40G01JPEXMBYT05) to fix that too.
