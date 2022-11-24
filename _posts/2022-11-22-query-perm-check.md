@@ -106,7 +106,7 @@ Comparing the TPS figure is even more helpful -- almost 10x improvement!
 OK, so where's the other bottleneck?
 
 `PortalStart()`, whose job is to initialize the plan tree for execution spends a non-trivial
-amount of time too, found in roughly 40% of the samples.  Expanding that frame, one hopes to
+amount of time too, found in roughly over 30% of the samples.  Expanding that frame, one hopes to
 find the culprits:
 
 ```
