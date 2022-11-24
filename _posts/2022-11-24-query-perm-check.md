@@ -2,11 +2,11 @@
 layout: writing
 title: "Postgres: more on performance of prepared statements with partitioning"
 tags: [writing, pg]
-last_updated: 2022-11-22
+last_updated: 2022-11-24
 ---
 # Postgres: more on performance of prepared statements with partitioning
 
-Nov 22, 2022
+Nov 24, 2022
 
 In a previous [post](https://amitlan.com/2022/05/16/param-query-partition-woes.html), I
 described some performance problems when using prepared statements with partitioning due to
