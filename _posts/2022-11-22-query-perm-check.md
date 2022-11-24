@@ -130,12 +130,13 @@ find the culprits:
            0.51% OidInputFunctionCall
 ```
 
-`ExecCheckRTPerms()` is there to check whether the user has needed permissions on the
-table mentioned in the query.  It should really be quick as there is just one table to
-be checked in this case (the "root" partitioned table), but the current implementation
-is such that it spends `O(n)` amount of time in the number of partitions.  Note that
-the code visits each partition, it doesn't actually checks its permissions, so that's
-just wasteful looping.
+`ExecCheckRTPerms()` among those is there to check whether the user running the query
+has needed permissions on the table(s) mentioned in the query.  It should really be
+quick in this case (that is, not show as much in the `perf` profile) as there is just
+one table to be checked in this case (the "root" partitioned table), but the current
+implementation is such that it spends `O(n)` amount of time in the number of partitions.
+Note that the code visits each partition, it doesn't actually checks its permissions, so
+that's just wasteful looping.
 
 The patch I mentioned in the 2nd paragraph changes things (specifically, the list contained
 the plan that records the relations whose permissions should be checked) such that
