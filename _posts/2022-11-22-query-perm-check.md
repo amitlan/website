@@ -10,9 +10,8 @@ Nov 22, 2022
 
 In a previous [post](https://amitlan.com/2022/05/16/param-query-partition-woes.html), I
 described some performance problems when using prepared statements with partitioning due to
-excessive locking of partitions, causing a bottleneck as the number of partitions that the
-table has increases.  I also mentioned a
-[patch](https://www.postgresql.org/message-id/CA%2BHiwqFGkMSge6TgC9KQzde0ohpAycLQuV7ooitEEpbKB0O_mg%40mail.gmail.com)
+excessive locking of partitions, causing a bottleneck as the number of partitions increases.
+I also mentioned a [patch](https://www.postgresql.org/message-id/CA%2BHiwqFGkMSge6TgC9KQzde0ohpAycLQuV7ooitEEpbKB0O_mg%40mail.gmail.com)
 that I have proposed to address that particular problem.  The following graph shows a comparison
 of the TPS performance of `pgbench -T60 --protocol=prepared` with varying number of partitions,
 initialized using `pgbench -i --partitions=$count`, before and after applying that patch.  (Note: 
