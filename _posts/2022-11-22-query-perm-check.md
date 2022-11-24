@@ -8,20 +8,27 @@ last_updated: 2022-11-22
 
 Nov 22, 2022
 
-In a previous [post](https://amitlan.com/2022/05/16/param-query-partition-woes.html), where I
-described the performance problems when using prepared statements with partitioning, I
-mentioned a [patch](https://www.postgresql.org/message-id/CA%2BHiwqFGkMSge6TgC9KQzde0ohpAycLQuV7ooitEEpbKB0O_mg%40mail.gmail.com)
-that I have proposed to alleviate the performance bottleneck caused by locking to some degree.
-The following graph shows a comparison of the TPS performance of `pgbench -T60 --protocol=prepared`
-with varying number of partitions, initialized using `pgbench -i --partitions=$count`.  Note that
+In a previous [post](https://amitlan.com/2022/05/16/param-query-partition-woes.html), I
+described some performance problems when using prepared statements with partitioning that
+are caused by excessive locking of partitions causing a bottleneck as the number of
+partitions that the table has increases.  I also mentioned a [patch]
+(https://www.postgresql.org/message-id/CA%2BHiwqFGkMSge6TgC9KQzde0ohpAycLQuV7ooitEEpbKB0O_mg%40mail.gmail.com)
+that I have proposed to address that particular problem.  The following graph shows a comparison
+of the TPS performance of `pgbench -T60 --protocol=prepared` with varying number of partitions,
+initialized using `pgbench -i --partitions=$count`, before and applying that patch.  Note that
 I have set `plan_cache_mode = force_generic_plan` in postgresql.conf to ensure the benchmark
 measures the performance with cached generic plans.
 
 ![v16 prepared generic plan tps for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1.png)
 
+In this post, I would like to highlight another bottleneck that pops it head out when the
+locking bottleneck is addressed.  Addressing that overhead with [another patch]
+(https://www.postgresql.org/message-id/CA%2BHiwqGjJDmUhDSfv-U2qhKJjt9ST7Xh9JXC_irsAQ1TAUsJYg%40mail.gmail.com)
+that is also in the pipeline for v16 gives a somewhat significant performance improvement,
+provided the locking overhead is addressed first.
 
-Without applying the patch, this is what the `perf` profile of a Postgres backend process
-looks like at low partition counts (say, 32):
+So let's look at the `perf` profile of a Postgres backend process running the above benchmark
+without applying any patch, at low partition counts (say, 32) first:
 
 ```
 -   97.99%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
@@ -44,12 +51,11 @@ looks like at low partition counts (say, 32):
            0.50% CreatePortal
 ```
 
-I had mentioned in the previous post that locking that's performed as part of validating a cached plan
-constitutes a significant portion of the overall query execution time.  `PortalStart()` and `PortalRun()`
-in the above stack have to do with the actual execution of the plan.  Process spends a non-trivial
-amount of time in `GetCachedPlan()`, locking the relations referenced in the plan.  This gets worse as
-the partition count increases; the following is the profile when the same benchmark is repeated with
-with 2048 partitions:
+Process spends a non-trivial amount of time in `GetCachedPlan()`, the backend function that
+looks up, validates, and returns a cached plan for a given prepared statement.  One of the
+things it does is locking the relations referenced in the plan.  This gets worse as the
+partition count increases as can be seen in the following profile taken when the same
+benchmark is repeated with with 2048 partitions:
 
 
 ```
@@ -71,40 +77,11 @@ with 2048 partitions:
 
 Almost half of the query execution is time spent locking the partitions, all 2048 of them in this case.
 
-The idea of the proposed patch is to reduce the set of partitions that need to be locked to validate
-a plan to just those that will be scanned during query execution, that is, skipping the locking for
-those that can be pruned.
+The idea of the proposed patch (one mentioned in the 1st paragraph) is to reduce the set of partitions
+that are locked by `GetCachedPlan()` to just those that will be scanned during query execution, that is,
+skipping the locking for those that can be pruned.
 
-Here's the profile with 32 partitions, With the patch applied:
-
-```
--   98.04%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
-     __libc_start_main
-     main
-     PostmasterMain
-   - ServerLoop
-      - 96.01% PostgresMain
-         + 36.86% PortalStart
-         + 11.11% pq_getbyte
-         - 10.40% GetCachedPlan
-            + 7.90% ExecutorDoInitialPruning
-            + 1.34% RevalidateCachedQuery
-         + 9.10% ReadyForQuery
-         + 8.51% PortalRun
-         + 8.31% finish_xact_command
-         + 1.75% start_xact_command
-         + 0.85% EndCommand
-           0.66% OidInputFunctionCall
-           0.51% CreatePortal
-```
-
-Hmm, the profile itself doesn't quite tell that the process is now able to spend relatively more time
-doing the work of executing the query, but the time spent under `GetCachedPlan()` is now shown as
-being spent doing the pruning.  So, not much of an improvement compared with when that time was being
-spent doing the locking.
-
-But now look at the profile for 2048 partitions:
-
+Here's the profile again, with the patch applied:
 
 ```
 -   96.97%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
@@ -124,13 +101,14 @@ But now look at the profile for 2048 partitions:
          + 1.48% start_xact_command
 ```
 
-Unlike without the patch, the time spent under `GetCachedPlan()` hasn't ballooned to over 50%, but has
-stayed around the same as with 32 partitions.  Comparing the TPS figure is even more helpful -- almost
-10x improvement!
+Unlike without the patch, the time spent under `GetCachedPlan()` hasn't ballooned to over 50%.
+Comparing the TPS figure is even more helpful -- almost 10x improvement!
 
-Actually, I lied a bit above where I said that seeing more time being spent in `PortalStart()` is a good
-thing, but actually not quite so, because that time is just initializing the plan tree for execution,
-not actual execution.  Expanding that frame, we can see the culprits:
+OK, so where's the other bottleneck?
+
+`PortalStart()`, whose job is to initialize the plan tree for execution spends a non-trivial
+amount of time too, found in roughly 40% of the samples.  Expanding that frame, one hopes to
+find the culprits:
 
 ```
 -   97.20%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
@@ -153,8 +131,18 @@ not actual execution.  Expanding that frame, we can see the culprits:
            0.51% OidInputFunctionCall
 ```
 
-The reason for pointing that out is that I have another [patch](https://www.postgresql.org/message-id/CA%2BHiwqGjJDmUhDSfv-U2qhKJjt9ST7Xh9JXC_irsAQ1TAUsJYg%40mail.gmail.com) whereby the time spent in `ExecCheckRTPerms()`
-is reduced significantly, as can be seen in the following updated profile after applying that patch:
+`ExecCheckRTPerms()` is there to check whether the user has needed permissions on the
+table mentioned in the query.  It should really be quick as there is just one table to
+be checked in this case (the "root" partitioned table), but the current implementation
+is such that it spends `O(n)` amount of time in the number of partitions.  Note that
+the code visits each partition, it doesn't actually checks its permissions, so that's
+just wasteful looping.
+
+The patch I mentioned in the 2nd paragraph changes things (specifically, the list contained
+the plan that records the relations whose permissions should be checked) such that
+`ExecCheckRTPerms()` no longer needs to visit each partition.  That reduces the time
+spent in that function significantly, as can be seen in the following updated profile
+after applying that patch:
 
 ```
 -   96.37%     0.00%  postgres  libc-2.17.so        [.] __libc_start_main
@@ -176,8 +164,8 @@ is reduced significantly, as can be seen in the following updated profile after 
            0.54% OidInputFunctionCall
 ```
 
-So the time spent in `PortalStart()` goes from 34% down to 24%.  The TPS is slightly improved too as can
-be seen in the following graph:
+So the time spent in `PortalStart()` goes from 34% down to 24%.  The TPS is slightly improved too
+as can be seen in the following graph:
 
 ![v16 prepared generic plan tps for partitioned tables_with_permissions_patch](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1-patch2.png)
 
