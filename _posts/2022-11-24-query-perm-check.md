@@ -20,7 +20,7 @@ measures the performance with cached generic plans.)
 
 ![v16 prepared generic plan tps for partitioned tables](https://s3.ap-northeast-1.amazonaws.com/amitlan.com/files/unpatched-patch1.png)
 
-In this post, I would like to highlight another bottleneck that pops it head out when the
+In this post, I would like to highlight another bottleneck that pops its head out when the
 locking bottleneck is addressed.  Addressing that overhead with
 [another patch](https://www.postgresql.org/message-id/CA%2BHiwqGjJDmUhDSfv-U2qhKJjt9ST7Xh9JXC_irsAQ1TAUsJYg%40mail.gmail.com)
 that is also in the pipeline for v16 gives a somewhat significant performance improvement,
