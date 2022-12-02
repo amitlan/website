@@ -21,7 +21,7 @@ title: Amit Langote
 <p>
   You can reach me at my personal <a href="mailto:amitlangote09@gmail.com">email</a>, on
   <a href="https://twitter.com/amitlan">Twitter</a>,
-  on <a href="https://mastodon.social/@amitlan">mastodon.social</a>
+  on <a href="https://mastodon.social/@amitlan">mastodon.social</a>,
   on <a href="https://linkedin.com/in/amitlan">LinkedIn</a>, or take a look at my
   <a href="https://s3-ap-northeast-1.amazonaws.com/amitlan.com/files/resume.pdf">resume</a>.
 </p>
