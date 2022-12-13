@@ -177,4 +177,4 @@ Addendum: The `finish_xact_command()` also spends more time than it really shoul
 benchmark (generic plan, with many partitions).  There's [work underway](https://www.postgresql.org/message-id/0A3221C70F24FB45833433255569204D1FB976EF%40G01JPEXMBYT05) to fix that too.
 
 Addendum 2: 2nd patch mentioned above, one that reworks `ExecCheckRTPerms()`, has been committed *for now* by
-Álvaro as [a61b1f748](https://git.postgresql.org/gitweb/postgres.git?p=postgresql.git;a=commit;h=a61b1f74823c9c4f79c95226a461f1e7a367764b), so will hopefully be a part of the next (v16) release.
+[Álvaro](https://twitter.com/alvherre) as [a61b1f748](https://git.postgresql.org/gitweb/postgres.git?p=postgresql.git;a=commit;h=a61b1f74823c9c4f79c95226a461f1e7a367764b), so will hopefully be a part of the next (v16) release.
