@@ -4,7 +4,7 @@ title: Amit Langote
 ---
 
 <p>
-<img src="files/me2.jpeg" alt="Hey there!" align="right"/>
+<div class="imgbox"><img src="files/me2.jpeg" alt="Hey there!" align="right"/></div>
   I'm a principal engineer at <a href="https://www.enterprisedb.com/">EDB</a>
   on its database server product team where my main focus is contributions
   to open source PostgreSQL. Before joining EDB, I worked at
