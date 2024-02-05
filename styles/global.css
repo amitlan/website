@@ -33,6 +33,7 @@ img {
         .imgbox {
             display: grid;
             height: 100%;
+		align: left;
         }
         .center-fit {
             max-width: 60%;
