@@ -29,6 +29,7 @@ body{
 img {
     max-width: 60%;
     max-height: 60%;
+	align: left;
 }
         .imgbox {
             display: grid;
@@ -39,4 +40,5 @@ img {
             max-width: 60%;
             max-height: 60vh;
             margin: auto;
+		align:left;
         }
