@@ -1,3 +1,4 @@
+
 a{
 	color:#1f4068;
 }
@@ -41,4 +42,7 @@ img {
             max-height: 60vh;
             margin: auto;
 		align:left;
+        }
+#left {
+            text-align: left;
         }
