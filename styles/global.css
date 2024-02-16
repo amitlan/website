@@ -28,21 +28,12 @@ body{
 }
 
 img {
-    max-width: 60%;
-    max-height: 60%;
+    max-width: 50%;
+    max-height: 50%;
 	align: left;
 }
-        .imgbox {
-            display: grid;
-            height: 100%;
-		align: left;
-        }
-        .center-fit {
-            max-width: 60%;
-            max-height: 60vh;
-            margin: auto;
-		align:left;
-        }
+
 #left {
-            float: left;
-        }
+	float: left;
+	margin: 0 0 0 15px;
+}
