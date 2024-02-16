@@ -44,5 +44,5 @@ img {
 		align:left;
         }
 #left {
-            text-align: left;
+            float: left;
         }
