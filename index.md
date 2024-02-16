@@ -10,7 +10,7 @@ title: Amit Langote
   <a href="https://microsoft.com/">Microsoft</a> on its
   <a href="https://azure.microsoft.com">Azure</a> Data team with a focus on
   upstream contributions to PostgreSQL.  Previously, I worked at
-  <a href="https://enterprisedb.com/">EDB</a>
+  <a href="https://enterprisedb.com/">EDB</a> and 
   <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>.
 </p>
 
