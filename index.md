@@ -5,11 +5,13 @@ title: Amit Langote
 
 <img class="center-fit" src="files/me2.jpeg" alt="Hey there!" id="left"/>
 <p>
-  I'm a principal engineer at <a href="https://www.enterprisedb.com/">EDB</a>
-  on its database server product team where my main focus is contributions
-  to open source PostgreSQL. Before joining EDB, I worked at
-  <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>
-  as a senior software engineer with basically the same focus.
+  I'm a software developer experienced in open source developement of databases, primarily
+  PostgreSQL and related tools.  I currently work at
+  <a href="https://microsoft.com/">Microsoft</a> on its
+  <a href="https://azure.microsoft.com">Azure Data</a> team with a focus on
+  upstream contributions to PostgreSQL.  Previously, I worked at
+  <a href="https://enterprisedb.com/">EDB</a>
+  <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>.
 </p>
 
 <p>
