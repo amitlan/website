@@ -6,9 +6,9 @@ title: Amit Langote
 <img class="center-fit" src="files/me2.jpeg" alt="Hey there!" id="left"/>
 <p>
   I'm a software developer experienced in open source developement of databases, primarily
-  PostgreSQL and related tools.  I currently work at
+  PostgreSQL, and related tools.  I currently work at
   <a href="https://microsoft.com/">Microsoft</a> on its
-  <a href="https://azure.microsoft.com">Azure Data</a> team with a focus on
+  <a href="https://azure.microsoft.com">Azure</a> Data team with a focus on
   upstream contributions to PostgreSQL.  Previously, I worked at
   <a href="https://enterprisedb.com/">EDB</a>
   <a href="https://www.rd.ntt/e/sic/oss/">NTT Open Source Software Center</a>.
