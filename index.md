@@ -3,7 +3,6 @@ layout: default
 title: Amit Langote
 ---
 
-<img class="center-fit" src="files/me2.jpeg" alt="Hey there!" id="left"/>
 <p>
   I'm a software developer experienced in open source developement of databases, primarily
   PostgreSQL, and related tools.  I currently work at
