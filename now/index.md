@@ -1,12 +1,9 @@
 ---
-layout: default
-title: Now
+layout: writing
+title: "Now"
+tags: [now]
+last_updated: 2024-05-24
 ---
-<ul class="posts">
-  {% for post in site.tags["now"] %}
-    <li>
-      <a href="{{ post.url }}">{{ post.title }}</a>
-      <div class="text" style="color: #718096">{{ post.description }}</div>
-    </li>
-  {% endfor %}
-</ul>
+# May 2024
+
+3 months into my new job.  Traveling next week (for a week) to North America west coast with N and R for the 1st time.
