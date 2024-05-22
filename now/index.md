@@ -1,5 +1,5 @@
 ---
-layout: writing
+layout: default
 title: "Now"
 tags: [now]
 last_updated: 2024-05-24
