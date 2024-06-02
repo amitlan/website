@@ -33,6 +33,17 @@ img {
 	align: top;
 }
 
+/**
+ * VARIABLES
+ */
+:root{
+  --bg: #f8fafc;
+  --panel-bg: #FFFFFF;
+  --panel-border: #CCCCCC;
+  --panel-title: #343f44;
+  --panel-text: #54666d;
+  --btn: #3eb0ef;
+}
 
 /**
  * TOGGLERS 
