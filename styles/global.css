@@ -32,3 +32,42 @@ img {
     max-height: 20%;
 	align: top;
 }
+
+
+/**
+ * TOGGLERS 
+ */
+#toggleMode{
+  visibility: hidden;
+}
+
+.toggleDark,
+.toggleLight{
+  cursor: pointer;
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  left: 20px;
+}
+
+.toggleDark{
+  display: block;
+  color: #222;
+}
+
+.toggleDark:hover{
+  color: blue;
+}
+
+.toggleLight{
+  display: none;
+  color: white;
+}
+
+#toggleMode:checked ~ .toggleDark{
+  display: none;
+}
+
+#toggleMode:checked ~ .toggleLight{
+  display: block;
+}
