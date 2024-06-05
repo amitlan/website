@@ -4,7 +4,7 @@ title: "Resume"
 tags: [resume]
 last_updated: 2024-06-05
 ---
-<p><a href="files/resume.pdf">PDF</a></p>
+<p><a href="/files/resume.pdf">PDF</a></p>
 Software engineer with extensive experience contributing to PostgreSQL open source project
 # Skills
 * OSes worked on: Linux
