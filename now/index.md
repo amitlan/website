@@ -8,7 +8,7 @@ last_updated: 2024-05-24
 
 <img class="center-fit" src="/files/me3.jpg" alt="Feb 2025" id="left"/>
 <p>
-  1 year into the new job.  Just updating the picture taken this evening.
+  1 year into the new job. Updating the picture.
 </p>
 
 ## May 2024 (Setagaya, Tokyo, Japan)
