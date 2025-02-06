@@ -4,7 +4,12 @@ title: "Now"
 tags: [now]
 last_updated: 2024-05-24
 ---
-## May 2024 (Setagaya, Tokyo, Japan)
+## Feb 2025 (Setagaya, Tokyo, Japan)
+
+<img class="center-fit" src="/files/me3.jpeg" alt="Feb 2025" id="left"/>
+<p>
+  1 year into the new job.  Just updating the picture taken this evening.
+</p>
 
 <img class="center-fit" src="/files/me2.jpeg" alt="May 2024" id="left"/>
 <p>
