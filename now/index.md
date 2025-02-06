@@ -6,7 +6,7 @@ last_updated: 2024-05-24
 ---
 ## Feb 2025 (Setagaya, Tokyo, Japan)
 
-<img class="center-fit" src="/files/me3.jpeg" alt="Feb 2025" id="left"/>
+<img class="center-fit" src="/files/me3.jpg" alt="Feb 2025" id="left"/>
 <p>
   1 year into the new job.  Just updating the picture taken this evening.
 </p>
