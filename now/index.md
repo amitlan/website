@@ -8,7 +8,7 @@ last_updated: 2024-05-24
 
 <img class="center-fit" src="/files/me3.jpg" alt="Feb 2025" id="left"/>
 <p>
-  1 year into the new job. Updating the picture.
+  1 year into the new job. Updating the picture and <a href="https://youtu.be/1x8_3kHM18s?si=P4FkVne0nDV3B6oE">Living My Life</a> I guess.
 </p>
 
 ## May 2024 (Setagaya, Tokyo, Japan)
